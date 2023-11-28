@@ -1,7 +1,6 @@
 'use strict';
 
 const { Model, Validator } = require('sequelize');
-const { DELETE } = require('sequelize/types/query-types');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
