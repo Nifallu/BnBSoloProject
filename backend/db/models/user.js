@@ -1,11 +1,25 @@
 'use strict';
 
 const { Model, Validator } = require('sequelize');
+const { DELETE } = require('sequelize/types/query-types');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       // define association here
+      User.hasMany(
+        models.Spot,
+          { foreignKey: 'ownerId', onDelete: 'CASCADE',  hooks: true }
+      );
+      User.hasMany(
+        models.Booking,
+        {foreignKey: 'userId', onDELETE: 'CASCADE', hooks: true}
+      );
+      User.hasMany(
+        models.Review,
+        {foreignKey: 'userId'}
+      );
+      
     }
   };
 
