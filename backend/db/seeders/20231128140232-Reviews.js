@@ -44,6 +44,36 @@ module.exports = {
       review: 'will never visit again',
       stars: 1
     },
+    {
+      spotId: 1,
+      userId: 5,
+      review: 'nope',
+      stars: 1
+    },
+    {
+      spotId: 2,
+      userId: 4,
+      review: 'to many bugs',
+      stars: 2
+    },
+    {
+      spotId: 3,
+      userId: 3,
+      review: 'not bad',
+      stars: 3
+    },
+    {
+      spotId: 4,
+      userId: 2,
+      review: 'sweetest place to visit',
+      stars: 4
+    },
+    {
+      spotId: 5,
+      userId: 1,
+      review: 'once in a lifetime experience',
+      stars: 5
+    },
    ], { validate: true })
 
    await ReviewImage.bulkCreate([
@@ -81,7 +111,7 @@ module.exports = {
       url: 'https://picsum.photos/200'
     })
     await queryInterface.bulkDelete('Reviews',{
-      review: ['Amazing view', 'Beautiful', 'not bad', 'eh kinda sticky', 'will never visit again']
+      review: ['Amazing view', 'Beautiful', 'not bad', 'eh kinda sticky', 'will never visit again', 'nope', 'to many bugs', 'sweetest place to visit', 'once in a lifetime experience' ]
     })
 
   }
