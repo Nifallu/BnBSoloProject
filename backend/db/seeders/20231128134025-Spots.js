@@ -113,11 +113,14 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Spot', {
-      address: ['123 main ave', '456 Burch st', '789 ok drive', '1011 maple dr', '123 missing st' ]
-    })
-    await queryInterface.bulkDelete('SpotImage', {
+    await queryInterface.bulkDelete('SpotImages', {
       url: 'https://picsum.photos/200'
-    })
+    });
+
+    await queryInterface.bulkDelete('Spots', {
+      // ownerId: [1,2,3,4,5]
+      address: ['123 main ave', '456 Burch st', '789 ok drive', '1011 maple dr', '123 missing st' ]
+    });
+
   }
 };

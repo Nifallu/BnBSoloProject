@@ -77,12 +77,13 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Review',{
-      review: ['Amazing view', 'Beautiful', 'not bad', 'eh', 'will never visit again']
-    })
-    await queryInterface.bulkDelete('ReviewImage', {
+    await queryInterface.bulkDelete('ReviewImages', {
       url: 'https://picsum.photos/200'
     })
+    await queryInterface.bulkDelete('Reviews',{
+      review: ['Amazing view', 'Beautiful', 'not bad', 'eh kinda sticky', 'will never visit again']
+    })
+
   }
   
 };

@@ -4,15 +4,7 @@ const { Booking } = require('../models');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
+
     await Booking.bulkCreate([
       {
         spotId: 1,
@@ -55,8 +47,8 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Booking',{
-      startDate: ['2023-11-30', '2023-12-10', '2023-12-20', '2023-12-25', '2023-12-25']
+    await queryInterface.bulkDelete('Bookings',{
+      spotId: [1,2,3,4,5]
     })
   }
 };
