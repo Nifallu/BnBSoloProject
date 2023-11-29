@@ -1,7 +1,7 @@
 const express = require('express')
 const { Model } = require('sequelize');
 
-const { Spot, Review, SpotImage  } = require('../../db/models');
+const { Spot, Review, SpotImage, User } = require('../../db/models');
 
 
 const router = express.Router();
@@ -53,6 +53,50 @@ router.get('/', async (req, res) => {
             payload
         })
 })
+
+router.get('/:spotId', async(req, res) =>{
+    const spot = await Spot.findByPk(req.params.spotId)
+
+    if(spot===null){
+        const error = new Error("Spot couldn't be found")
+        res.status(404).json({
+            message: error.message,
+        });
+    }
+    const numReviews = await Review.count({
+        where:{
+            spotId: spot.id
+        } 
+    })
+    const sum = await Review.sum('stars', {
+        where: {
+            spotId: spot.id
+        }
+    })
+    const avgRating = sum/numReviews;
+    
+    const SpotImages = await SpotImage.findAll({
+        where: {
+            spotId: spot.id
+        },
+        attributes: ['id', 'url', 'preview']
+    })
+    const Owner = await User.findOne({
+        where: {
+            id: spot.ownerId
+        },
+        attributes: ['id', 'firstName', 'lastName']
+    })
+
+    res.json({
+        spot,
+        numReviews,
+        avgRating,
+        SpotImages,
+        Owner
+
+    })
+} )
 
 
 
