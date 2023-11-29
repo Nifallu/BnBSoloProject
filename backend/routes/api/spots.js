@@ -57,6 +57,57 @@ router.get('/', async (req, res) => {
         return res.json(payload)
 })
 
+//Get all Spots owned by the current user
+router.get('/current', requireAuth, async (req, res)=>{
+    const userSpots = await Spot.findAll({
+        where: {
+            ownerId: req.user.id
+        }
+    })
+    const Spots = [];
+    for(let i = 0; i < userSpots.length; i++ ){
+        const spot = userSpots[i];
+        const previewImage = await SpotImage.findAll({
+            where: {
+                spotId: spot.id
+            },
+            attributes: ['url']
+        })
+        const count = await Review.count({
+            where: {
+                spotId: spot.id
+            }
+        })
+        const sum = await Review.sum('stars', {
+            where: {
+                spotId: spot.id
+            }
+        })
+        const avgRating = sum/count;
+
+        const spotsData = {
+            id: spot.id, 
+            ownerId: spot.ownerId, 
+            address: spot.address, 
+            city: spot.city,
+            state: spot.state, 
+            country: spot.country, 
+            lat: spot.lat, 
+            lng: spot.lng, 
+            name: spot.name, 
+            description: spot.description, 
+            price: spot.price,
+            createdAt: spot.createdAt,
+            updatedAt: spot.updatedAt, 
+            previewImage: previewImage.map(image => image.url).join(', '),
+            avgRating: avgRating
+        };
+        Spots.push(spotsData)
+    }
+        return res.json({Spots})
+})
+
+
 //Get details for a Spot from an id
 router.get('/:spotId', async(req, res) =>{
     const spot = await Spot.findByPk(req.params.spotId)
@@ -234,7 +285,6 @@ router.delete('/:spotId', requireAuth, async (req, res)=>{
         message: "Successfully deleted"
     })
 })
-
 
 
 
