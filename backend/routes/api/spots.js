@@ -134,7 +134,7 @@ router.get('/:spotId/reviews', async (req, res)=>{
     })
 })
 
-
+//Create a spot
 const validateSpot = [
     check('address')
       .exists({ checkFalsy: true })
@@ -165,11 +165,11 @@ const validateSpot = [
       .withMessage('Description is required'),
     check('price')
       .exists({ checkFalsy: true })
+      .isNumeric()
       .withMessage('Price per day is required'),
 
     handleValidationErrors
   ];
-//Create a spot
 
 router.post('/', requireAuth, validateSpot,  async (req, res)=>{
     const {address, city, state, country, lat, lng, name, description, price} = req.body
@@ -194,6 +194,48 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
        newSpot
     })
 })
+
+//edit a spot
+router.put('/:spotId', requireAuth, async (req, res)=>{
+    const spot = await Spot.findByPk(req.params.spotId)
+
+    if(spot===null){
+        const error = new Error("Spot couldn't be found")
+        res.status(404).json({
+            message: error.message,
+        });
+    }
+
+})
+
+
+
+//delete a spot
+router.delete('/:spotId', requireAuth, async (req, res)=>{
+
+    const spot = await Spot.findByPk(req.params.spotId)
+
+    if(spot===null){
+        const error = new Error("Spot couldn't be found")
+        res.status(404).json({
+            message: error.message,
+        });
+    }
+
+    if(spot.ownerId !== req.user.id){
+        return res.status(403).json({
+            message: "Unauthorized"
+        })
+    }
+
+    await spot.destroy();
+    
+    res.json({
+        message: "Successfully deleted"
+    })
+})
+
+
 
 
 module.exports = router;
