@@ -21,21 +21,74 @@ router.get('/current', requireAuth, async (req, res)=>{
         include: [
             {
                 model: User,
-                attribute: ['id', 'firstName', 'lastName']
+                attributes: ['id', 'firstName', 'lastName']
             },
             {
                 model: Spot,
-                exclude: ['createdAt', 'updatedAt']
+                attributes: ['id', 'ownerId', 'id','ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name',
+                'price'],
+                include: {
+                    model: SpotImage,
+                    attributes: ['url'],
+                    as: 'previewImage',
+                }
             },
             {
                 model: ReviewImage,
-                attribute: ['id', 'url']
+                attributes: ['id', 'url']
             }
         ]
     })
 
+    const formattedReviews = reviews.map((review) => ({
+        ...review.toJSON(),
+        Spot: {
+            ...review.Spot.toJSON(),
+            previewImage: review.Spot.previewImage.map((image) => image.url).join(', '),
+        },
+    }));
+    
+
     res.json({
-        Reviews: reviews
+        Reviews: formattedReviews
+    })
+})
+
+//Add an Image to a Review based on the Review's id
+router.post('/:reviewId/images', requireAuth, async (req, res)=>{
+    const review = await Review.findByPk(req.params.reviewId)
+    if(review === null){
+        res.status(404).json({
+            message: "Review couldn't be found"
+        });
+    }
+
+    if(review.userId !== req.user.id){
+        return res.status(403).json({
+            message: "Forbidden"
+        })
+    }
+
+    const reviewImages = await ReviewImage.findAll({
+        where: {
+            reviewId: review.id
+        }
+    })
+    if(reviewImages.length >= 10){
+        return res.status(403).json({
+            message: "Maximum number of images for this resource was reached"
+        })
+    }
+    const {url} = req.body
+    const newReviewImg = ReviewImage.build({
+        reviewId: req.params.reviewId,
+        url: url
+    });
+    await newReviewImg.save();
+
+    res.json({
+        id: newReviewImg.id,
+        url: newReviewImg.url,
     })
 })
 

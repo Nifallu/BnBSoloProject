@@ -49,14 +49,6 @@ const validateSpot = [
     handleValidationErrors
   ];
 
-  const checkAuthor = function(ownerId, userId) { 
-    if(ownerId !== userId){
-    return res.status(403).json({
-        message: "Forbidden"
-    })
-}}
-
-
 //get all Spots
 router.get('/', async (req, res) => {
     const spots = await Spot.findAll({
@@ -263,9 +255,46 @@ router.get('/:spotId/reviews', async (req, res)=>{
 })
 
 //Create a Review for a Spot based on the Spot's id
-router.post('/:spotId/reviews', requireAuth, async (req, res)=>{
+const validateReview = [
+    check('review')
+        .exists({ checkFalsy: true })
+        .withMessage('Review text is required'),
+    check('stars')
+        .exists({ checkFalsy: true })
+        .isInt({min:1, max:5})
+        .withMessage('Stars must be an integer from 1 to 5'),
+    handleValidationErrors
+];
+router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res)=>{
+    const spot = await Spot.findByPk(req.params.spotId)
 
+    if(spot===null){
+        res.status(404).json({
+            message: "Spot couldn't be found"
+        });
+    }
 
+    const reviews = await Review.findAll({
+        where:{
+        userId: req.user.id,
+        spotId: req.params.spotId
+        }
+    }) 
+    if(reviews.length >= 1 ){
+        res.status(403).json({
+            message: "User already has a review for this spot"
+        });
+    }
+    const {review, stars} = req.body
+    const newReview = Review.build({
+        userId: req.user.id,
+        spotId: req.params.spotId,
+        review,
+        stars
+    })
+    await newReview.save()
+
+    res.json(newReview)
 })
 
   //Create a spot
@@ -295,7 +324,7 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
 
 
 //edit a spot
-router.put('/:spotId', requireAuth, async (req, res)=>{
+router.put('/:spotId', requireAuth, validateSpot, async (req, res)=>{
     const {address, city, state, country, lat, lng, name, description, price} = req.body;
 
     const spot = await Spot.findByPk(req.params.spotId)
@@ -350,3 +379,7 @@ router.delete('/:spotId', requireAuth, async (req, res)=>{
         message: "Successfully deleted"
     })
 })
+
+
+
+module.exports = router;
