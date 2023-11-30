@@ -4,8 +4,9 @@ const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
 
 const spotRouter = require('./spots.js');
+const reviewRouter = require('./reviews.js')
 
-const { restoreUser } = require('../../utils/auth.js');
+const { restoreUser, requireAuth } = require('../../utils/auth.js');
 
 router.use(restoreUser);
 
@@ -15,10 +16,22 @@ router.use('/users', usersRouter);
 
 router.use('/spots', spotRouter);
 
+router.use('/reviews', reviewRouter)
+
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
 });
 
+
+//Delete an Image for a Spot
+router.delete('/spot-images/:imageId',requireAuth, async (req, res)=>{
+  
+})
+
+//Delete a Review Image
+router.delete('/review-images/:imageId',requireAuth, async (req, res)=>{
+  
+})
 //  testing routs
 // router.post('/test', function(req, res) {
 //     res.json({ requestBody: req.body });

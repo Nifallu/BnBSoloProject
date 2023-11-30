@@ -12,6 +12,51 @@ const { route } = require('./session');
 
 const router = express.Router();
 
+
+const validateSpot = [
+    check('address')
+      .exists({ checkFalsy: true })
+      .withMessage('Street address is required'),
+    check('city')
+      .exists({ checkFalsy: true })
+      .withMessage('City is required'),
+    check('state')
+      .exists({ checkFalsy: true })
+      .withMessage('State is required'),
+    check('country')
+      .exists({ checkFalsy: true })
+      .withMessage('Country is required'),
+    check('lat')
+      .exists({ checkFalsy: true })
+      .isFloat({ min: -90, max: 90 })
+      .withMessage('Latitude is not valid'),
+    check('lng')
+      .exists({ checkFalsy: true })
+      .isFloat({ min: -180, max: 180 })
+      .withMessage('Longitude is not valid'),
+    check('name')
+      .exists({ checkFalsy: true })
+      .isLength({max: 50})
+      .withMessage('Name must be less than 50 characters'),
+    check('description')
+      .exists({ checkFalsy: true })
+      .withMessage('Description is required'),
+    check('price')
+      .exists({ checkFalsy: true })
+      .isNumeric()
+      .withMessage('Price per day is required'),
+
+    handleValidationErrors
+  ];
+
+  const checkAuthor = function(ownerId, userId) { 
+    if(ownerId !== userId){
+    return res.status(403).json({
+        message: "Forbidden"
+    })
+}}
+
+
 //get all Spots
 router.get('/', async (req, res) => {
     const spots = await Spot.findAll({
@@ -131,6 +176,7 @@ router.post('/:spotId/images', requireAuth, async (req, res)=> {
         url,
         preview
     })
+
     await newSpotImage.save()
 
     res.json({       
@@ -185,7 +231,6 @@ router.get('/:spotId', async(req, res) =>{
     })
 } )
 
-
 //Get all Reviews by a Spot's id
 router.get('/:spotId/reviews', async (req, res)=>{
 
@@ -217,41 +262,11 @@ router.get('/:spotId/reviews', async (req, res)=>{
     })
 })
 
-const validateSpot = [
-    check('address')
-      .exists({ checkFalsy: true })
-      .withMessage('Street address is required'),
-    check('city')
-      .exists({ checkFalsy: true })
-      .withMessage('City is required'),
-    check('state')
-      .exists({ checkFalsy: true })
-      .withMessage('State is required'),
-    check('country')
-      .exists({ checkFalsy: true })
-      .withMessage('Country is required'),
-    check('lat')
-      .exists({ checkFalsy: true })
-      .isFloat({ min: -90, max: 90 })
-      .withMessage('Latitude is not valid'),
-    check('lng')
-      .exists({ checkFalsy: true })
-      .isFloat({ min: -180, max: 180 })
-      .withMessage('Longitude is not valid'),
-    check('name')
-      .exists({ checkFalsy: true })
-      .isLength({max: 50})
-      .withMessage('Name must be less than 50 characters'),
-    check('description')
-      .exists({ checkFalsy: true })
-      .withMessage('Description is required'),
-    check('price')
-      .exists({ checkFalsy: true })
-      .isNumeric()
-      .withMessage('Price per day is required'),
+//Create a Review for a Spot based on the Spot's id
+router.post('/:spotId/reviews', requireAuth, async (req, res)=>{
 
-    handleValidationErrors
-  ];
+
+})
 
   //Create a spot
 router.post('/', requireAuth, validateSpot,  async (req, res)=>{
@@ -335,7 +350,3 @@ router.delete('/:spotId', requireAuth, async (req, res)=>{
         message: "Successfully deleted"
     })
 })
-
-
-
-module.exports = router;
