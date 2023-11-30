@@ -74,5 +74,10 @@ const requireAuth = function (req, _res, next) {
     return next(err);
   }
 
+  // const ownerAuth = function (req, res, next) {
+  //   if (req.user.id === req.params.id){
+
+  //   }
+  // }
 
   module.exports = { setTokenCookie, restoreUser, requireAuth };
