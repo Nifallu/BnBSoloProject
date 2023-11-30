@@ -322,7 +322,6 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
     })
 })
 
-
 //edit a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res)=>{
     const {address, city, state, country, lat, lng, name, description, price} = req.body;
