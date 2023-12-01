@@ -57,11 +57,11 @@ module.exports = {
         city: 'Maple Syrup',
         state: 'Ontario',
         country: 'Canada',
-        lat: 43.8518,
-        lng: 79.5273,
+        lat: 35.0000,
+        lng: 40.0000,
         name: 'Syrup Place',
         description: 'A sweet place to sleep',
-        price: 299.90
+        price: 99.99
       },
       {
         ownerId: 5,

@@ -546,7 +546,9 @@ router.get('/', validateQueryFilters, async (req, res) => {
         };
         payload.push(spotsData)
     }
-        return res.json(payload)
+        return res.json({
+            Spots: payload
+        })
 })
 
   //Create a spot
@@ -569,9 +571,7 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
     )
     await newSpot.save()
 
-    res.json({
-       newSpot
-    })
+    res.json(newSpot)
 })
 
 module.exports = router;
