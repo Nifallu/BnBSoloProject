@@ -36,28 +36,67 @@ router.get('/current', requireAuth, async (req, res)=>{
         id: booking.id,
         spotId: booking.spotId,
         Spot: {
-          id: booking.Spot.id,
-          ownerId: booking.Spot.ownerId,
-          address: booking.Spot.address,
-          city: booking.Spot.city,
-          state: booking.Spot.state,
-          country: booking.Spot.country,
-          lat: booking.Spot.lat,
-          lng: booking.Spot.lng,
-          name: booking.Spot.name,
-          price: booking.Spot.price,
-          previewImage: booking.Spot.previewImage.map(image => image.url).join(', ')
+            id: booking.Spot.id,
+            ownerId: booking.Spot.ownerId,
+            address: booking.Spot.address,
+            city: booking.Spot.city,
+            state: booking.Spot.state,
+            country: booking.Spot.country,
+            lat: booking.Spot.lat,
+            lng: booking.Spot.lng,
+            name: booking.Spot.name,
+            price: booking.Spot.price,
+            previewImage: booking.Spot.previewImage.map(image => image.url).join(', ')
         },
         userId: booking.userId,
         startDate: booking.startDate,
         endDate: booking.endDate,
         createdAt: booking.createdAt,
         updatedAt: booking.updatedAt
-      }));
+    }));
   
-      res.json({ Bookings: transformedBookings });
+    res.json({ Bookings: transformedBookings });
 })
 
+//Edit a Booking
+const validateBooking = [
+    check('startDate')
+        .exists({ checkFalsy: true })
+        .withMessage('startDate is required'),
+    check('endDate')
+        .exists({ checkFalsy: true })
+        .custom((endDate, { req }) => {
+            const startDate = req.body.startDate; 
+            if (endDate <= startDate) {
+                throw new Error('endDate cannot be on or before startDate');
+            }
+            return true;
+        }),
+    handleValidationErrors
+];
+router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
+    const {startDate, endDate} = req.body
+    const booking = await Booking.findByPk(req.params.bookingId)
+
+    if(booking===null){
+        const error = new Error("Spot couldn't be found")
+        res.status(404).json({
+            message: error.message,
+        });
+    }
+
+    if(booking.userId !== req.user.id){
+        return res.status(403).json({
+            message: "Forbidden"
+        })
+    }
+
+    
+
+
+})
+
+//delete a booking
 router.delete('/:bookingId', requireAuth, async (req,res)=>{
     const booking = await Booking.findByPk(req.params.bookingId)
 
@@ -73,11 +112,11 @@ router.delete('/:bookingId', requireAuth, async (req,res)=>{
             message: "Forbidden"
         })
     }
-    const currentDate = new Date()
-    currentDate.setHours(0, 0, 0, 0);
 
+    const currentDate = new Date()
+    // currentDate.setHours(0, 0, 0, 0);
     const bookingStartDate = booking.startDate;
-    bookingStartDate.setHours(0, 0, 0, 0);
+    // bookingStartDate.setHours(0, 0, 0, 0);
     
     if(bookingStartDate <= currentDate){
         return res.status(403).json({
@@ -89,7 +128,7 @@ router.delete('/:bookingId', requireAuth, async (req,res)=>{
 
     res.json({
         "message": "Successfully deleted"
-      })
+    })
 
 })
 

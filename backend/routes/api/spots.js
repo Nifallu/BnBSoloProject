@@ -1,5 +1,5 @@
 const express = require('express')
-const { Model } = require('sequelize');
+const { Sequelize} = require('sequelize');
 
 const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 
@@ -48,8 +48,6 @@ const validateSpot = [
 
     handleValidationErrors
   ];
-
-
 //Get all Spots owned by the current user
 router.get('/current', requireAuth, async (req, res)=>{
     const userSpots = await Spot.findAll({
@@ -258,7 +256,7 @@ router.get('/:spotId/bookings', requireAuth, async (req, res)=>{
     
 })
 
-//Create a Booking from a Spot based on the Spot's id
+
 const validateBooking = [
     check('startDate')
         .exists({ checkFalsy: true })
@@ -273,10 +271,19 @@ const validateBooking = [
             return true;
         }),
     handleValidationErrors
-]; //incomplete come back to it in a bit
+];
+//Create a Booking from a Spot based on the Spot's id
 router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=> {
     const {startDate, endDate} = req.body
-    const spot = await Spot.findByPk(req.params.spotId)
+    const spotId = req.params.spotId
+    const spot = await Spot.findByPk(spotId)
+
+    if(spot===null){
+        const error = new Error("Spot couldn't be found")
+        res.status(404).json({
+            message: error.message,
+        });
+    }
 
     if(spot.ownerId == req.user.id){
         return res.status(403).json({
@@ -284,27 +291,49 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
         })
     }
 
-    const bookings = await Booking.findAll({
+    const conflictingBookingStart = await Booking.findOne({
         where: {
-            spotId: req.params.spotId,
-            attributes: ['startDate', 'endDate']
+            spotId,
+            endDate: {
+            [Sequelize.Op.between]: [startDate, endDate]
+            }
         }
-    })
+    });
+    const conflictingBookingEnd = await Booking.findOne({
+        where: {
+            spotId,
+            startDate: {
+            [Sequelize.Op.between]: [startDate, endDate]
+            }
+        }
+    });
 
-    for(let i = 0; i < bookings.length; i++){
-        if( bookings[i].startDate <= startDate && startDate >= bookings[i].endDate){
-            
-        }
-        if(bookings[i].startDate <= endDate && endDate >= bookings[i].endDate){
+      let newBooking;
 
-        }
+      if(conflictingBookingStart === null && conflictingBookingEnd === null){
+        newBooking = await Booking.create({
+            spotId,
+            userId: req.user.id,
+            startDate,
+            endDate
+          });
+      } else if (conflictingBookingStart === null){
+        return res.status(403).json({
+            message: 'Sorry, this spot is already booked for the specified dates',
+            errors: {
+                "startDate": "Start date conflicts with an existing booking"
+            }
+      })
+    } else {
+        return res.status(403).json({
+            message: 'Sorry, this spot is already booked for the specified dates',
+            errors: {
+                "endDate": "End date conflicts with an existing booking"
+            }
+      })
     }
 
-    
-
-    res.json({
-        message: 'ok'
-    })
+    res.json(newBooking)
 })
 
 //Get details for a Spot from an id
@@ -409,16 +438,63 @@ router.delete('/:spotId', requireAuth, async (req, res)=>{
     })
 })
 
+//query filter
+const validateQueryFilters = [
+    check('page')
+        .optional({ nullable: true })
+        .isInt({ min: 1, max: 10 })
+        .withMessage('Page must be greater than or equal to 1'),
+    check('size')
+        .optional({ nullable: true })
+        .isInt({min: 1})
+        .withMessage('Size must be greater than or equal to 1'),
+    check('maxLat')
+        .optional({ nullable: true })
+        .isFloat({ min: -90, max: 90 })
+        .withMessage('Maximum latitude is invalid'),
+    check('minLat')
+        .optional({ nullable: true })
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Minimum latitude is invalid'),
+    check('minLng')
+        .optional({ nullable: true })
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Maximum longitude is invalid'),
+    check('maxLng')
+        .optional({ nullable: true })
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Minimum longitude is invalid'),
+    check('minPrice')
+        .optional({ nullable: true })
+        .isFloat({min: 0})
+        .withMessage('Minimum price must be greater than or equal to 0'),
+    check('maxPrice')
+        .optional({ nullable: true })
+        .isFloat({min: 0})
+        .withMessage('Maximum price must be greater than or equal to 0'),
+    handleValidationErrors
+];
 //get all Spots
-router.get('/', async (req, res) => {
+router.get('/', validateQueryFilters, async (req, res) => {
+    let {page, size, minLat, maxLat,minLng, minPrice, maxPrice} = req.query;
+
+    if (page === undefined) page = 1;
+    if (size === undefined) size = 10;
+    const pagination = {
+        limit: size,
+        offset: size * (page - 1)
+    };
+
     const spots = await Spot.findAll({
+        ...pagination
     });
     const payload = [];
     for(let i = 0; i < spots.length; i++ ){
         const spot = spots[i];
         const previewImage = await SpotImage.findAll({
             where: {
-                spotId: spot.id
+                spotId: spot.id,
+                // preview :true
             },
             attributes: ['url']
         })
@@ -456,8 +532,8 @@ router.get('/', async (req, res) => {
         return res.json(payload)
 })
 
-  //Create a spot
-  router.post('/', requireAuth, validateSpot,  async (req, res)=>{
+//Create a spot
+router.post('/', requireAuth, validateSpot,  async (req, res)=>{
     const {address, city, state, country, lat, lng, name, description, price} = req.body
     const spotInfo = {}
     spotInfo.ownerId = req.user.id;
