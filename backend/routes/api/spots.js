@@ -132,7 +132,6 @@ router.post('/:spotId/images', requireAuth, async (req, res)=> {
     })
 })
 
-
 //Get all Reviews by a Spot's id
 router.get('/:spotId/reviews', async (req, res)=>{
 
@@ -257,6 +256,55 @@ router.get('/:spotId/bookings', requireAuth, async (req, res)=>{
         Bookings: booking,
     })
     
+})
+
+//Create a Booking from a Spot based on the Spot's id
+const validateBooking = [
+    check('startDate')
+        .exists({ checkFalsy: true })
+        .withMessage('startDate is required'),
+    check('endDate')
+        .exists({ checkFalsy: true })
+        .custom((endDate, { req }) => {
+            const startDate = req.body.startDate; 
+            if (endDate <= startDate) {
+                throw new Error('endDate cannot be on or before startDate');
+            }
+            return true;
+        }),
+    handleValidationErrors
+]; //incomplete come back to it in a bit
+router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=> {
+    const {startDate, endDate} = req.body
+    const spot = await Spot.findByPk(req.params.spotId)
+
+    if(spot.ownerId == req.user.id){
+        return res.status(403).json({
+            message: "Forbidden"
+        })
+    }
+
+    const bookings = await Booking.findAll({
+        where: {
+            spotId: req.params.spotId,
+            attributes: ['startDate', 'endDate']
+        }
+    })
+
+    for(let i = 0; i < bookings.length; i++){
+        if( bookings[i].startDate <= startDate && startDate >= bookings[i].endDate){
+            
+        }
+        if(bookings[i].startDate <= endDate && endDate >= bookings[i].endDate){
+
+        }
+    }
+
+    
+
+    res.json({
+        message: 'ok'
+    })
 })
 
 //Get details for a Spot from an id
