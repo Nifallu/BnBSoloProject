@@ -58,5 +58,39 @@ router.get('/current', requireAuth, async (req, res)=>{
       res.json({ Bookings: transformedBookings });
 })
 
+router.delete('/:bookingId', requireAuth, async (req,res)=>{
+    const booking = await Booking.findByPk(req.params.bookingId)
+
+    if(booking === null){
+        const error = new Error("Booking couldn't be found")
+        res.status(404).json({
+            message: error.message,
+        });
+    }
+
+    if(booking.userId !== req.user.id){
+        return res.status(403).json({
+            message: "Forbidden"
+        })
+    }
+    const currentDate = new Date()
+    currentDate.setHours(0, 0, 0, 0);
+
+    const bookingStartDate = booking.startDate;
+    bookingStartDate.setHours(0, 0, 0, 0);
+    
+    if(bookingStartDate <= currentDate){
+        return res.status(403).json({
+            message:  "Bookings that have been started can't be deleted"
+        })
+    }
+
+    await booking.destroy()
+
+    res.json({
+        "message": "Successfully deleted"
+      })
+
+})
 
 module.exports = router;
