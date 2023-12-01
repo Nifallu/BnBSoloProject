@@ -1,5 +1,5 @@
 const express = require('express')
-const { Model } = require('sequelize');
+const { Sequelize} = require('sequelize');
 
 const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
 
@@ -75,11 +75,13 @@ const validateBooking = [
     handleValidationErrors
 ];
 router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
-    const {startDate, endDate} = req.body
-    const booking = await Booking.findByPk(req.params.bookingId)
+    const {startDate, endDate} = req.body;
+    const bookingId = req.params.bookingId;
+    const booking = await Booking.findByPk(bookingId);
+    const spotId = booking.spotId;
 
     if(booking===null){
-        const error = new Error("Spot couldn't be found")
+        const error = new Error("Booking couldn't be found")
         res.status(404).json({
             message: error.message,
         });
@@ -91,9 +93,77 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
         })
     }
 
-    
+    const currentDate = new Date();
 
+    if(startDate <= currentDate){
+        return res.status(403).json({
+            message: "Past bookings can't be modified"
+        })
+    }
 
+    const conflictingBookingStart = await Booking.findOne({
+        where: {
+            spotId,
+            [Sequelize.Op.or]: [
+                {
+                    endDate: {
+                        [Sequelize.Op.between]: [startDate, endDate]
+                    }
+                },
+                {
+                    endDate: endDate // Equal to the end date
+                },
+                {
+                    endDate: startDate // Equal to the start date
+                },
+                
+            ],
+            id: {
+                [Sequelize.Op.ne]: bookingId // Exclude the booking being updated
+            }
+        }
+    });
+    const conflictingBookingEnd = await Booking.findOne({
+        where: {
+            spotId,
+            [Sequelize.Op.or]: [
+                {
+                    startDate: {
+                        [Sequelize.Op.between]: [startDate, endDate]
+                    }
+                },
+                {
+                    startDate: endDate
+                },
+                {
+                    startDate: startDate
+                }
+            ],
+            id: {
+                [Sequelize.Op.ne]: bookingId // Exclude the booking being updated
+            },}
+        });
+
+    if(conflictingBookingStart === null && conflictingBookingEnd === null){
+        booking.startDate = startDate;
+        booking.endDate = endDate;
+        } else if (conflictingBookingStart !== null){
+        return res.status(403).json({
+            message: 'Sorry, this spot is already booked for the specified dates',
+            errors: {
+                "startDate": "Start date conflicts with an existing booking"
+            }
+        })
+    } else {
+        return res.status(403).json({
+            message: 'Sorry, this spot is already booked for the specified dates',
+            errors: {
+                "endDate": "End date conflicts with an existing booking"
+            }
+        })
+    }
+
+    res.json(booking)
 })
 
 //delete a booking

@@ -256,7 +256,7 @@ router.get('/:spotId/bookings', requireAuth, async (req, res)=>{
     
 })
 
-
+//Create a Booking from a Spot based on the Spot's id
 const validateBooking = [
     check('startDate')
         .exists({ checkFalsy: true })
@@ -272,7 +272,6 @@ const validateBooking = [
         }),
     handleValidationErrors
 ];
-//Create a Booking from a Spot based on the Spot's id
 router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=> {
     const {startDate, endDate} = req.body
     const spotId = req.params.spotId
@@ -294,43 +293,61 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
     const conflictingBookingStart = await Booking.findOne({
         where: {
             spotId,
-            endDate: {
-            [Sequelize.Op.between]: [startDate, endDate]
-            }
-        }
+            [Sequelize.Op.or]: [
+                {
+                    endDate: {
+                        [Sequelize.Op.between]: [startDate, endDate]
+                    }
+                },
+                {
+                    endDate: endDate // Equal to the end date
+                },
+                {
+                    endDate: startDate // Equal to the start date
+                }
+            ]}
     });
     const conflictingBookingEnd = await Booking.findOne({
         where: {
             spotId,
-            startDate: {
-            [Sequelize.Op.between]: [startDate, endDate]
-            }
-        }
-    });
+            [Sequelize.Op.or]: [
+                {
+                    startDate: {
+                        [Sequelize.Op.between]: [startDate, endDate]
+                    }
+                },
+                {
+                    startDate: endDate
+                },
+                {
+                    startDate: startDate
+                }
+            ]}
+        });
 
-      let newBooking;
+    let newBooking;
 
-      if(conflictingBookingStart === null && conflictingBookingEnd === null){
+    if(conflictingBookingStart === null && conflictingBookingEnd === null){
         newBooking = await Booking.create({
             spotId,
             userId: req.user.id,
             startDate,
             endDate
-          });
-      } else if (conflictingBookingStart === null){
+        });
+    } else if (conflictingBookingStart !== null){
         return res.status(403).json({
             message: 'Sorry, this spot is already booked for the specified dates',
             errors: {
                 "startDate": "Start date conflicts with an existing booking"
             }
-      })
+    })
     } else {
         return res.status(403).json({
             message: 'Sorry, this spot is already booked for the specified dates',
             errors: {
                 "endDate": "End date conflicts with an existing booking"
             }
-      })
+    })
     }
 
     res.json(newBooking)
@@ -532,7 +549,7 @@ router.get('/', validateQueryFilters, async (req, res) => {
         return res.json(payload)
 })
 
-//Create a spot
+  //Create a spot
 router.post('/', requireAuth, validateSpot,  async (req, res)=>{
     const {address, city, state, country, lat, lng, name, description, price} = req.body
     const spotInfo = {}
