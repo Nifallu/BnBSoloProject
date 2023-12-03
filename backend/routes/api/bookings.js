@@ -121,7 +121,11 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
             }
         }
     })
-
+    const checkStartOnEnd = await Booking.findOne({
+        where: {
+            endDate:startDate
+        }
+})
     const checkEndDate = await Booking.findOne({
         where:{
             spotId,
@@ -165,7 +169,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
         }
     })
 
-    if(checkStartDate === null && checkEndDate === null && checkBetween === null){
+    if(checkStartOnEnd ===null && checkStartDate === null && checkEndDate === null && checkBetween === null){
         booking.startDate = startDate,
         booking.endDate = endDate
     }else {

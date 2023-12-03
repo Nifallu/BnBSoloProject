@@ -96,7 +96,7 @@ module.exports = {
       {
         spotId: 4,
         url: 'https://picsum.photos/200',
-        preview: false,
+        preview: true,
       },
       {
         spotId: 5,

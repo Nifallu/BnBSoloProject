@@ -1,7 +1,7 @@
 const express = require('express')
 const { Sequelize} = require('sequelize');
 
-const { Spot, Review, SpotImage, User, ReviewImage, Booking } = require('../../db/models');
+const { Spot, Review, SpotImage, User, ReviewImage, Booking, sequelize } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -47,7 +47,7 @@ const validateSpot = [
       .withMessage('Price per day is required'),
 
     handleValidationErrors
-  ];
+];
 //Get all Spots owned by the current user
 router.get('/current', requireAuth, async (req, res)=>{
     const userSpots = await Spot.findAll({
@@ -530,7 +530,7 @@ const validateQueryFilters = [
 ];
 //get all Spots
 router.get('/', validateQueryFilters, async (req, res) => {
-    let {page, size, minLat, maxLat,minLng, minPrice, maxPrice} = req.query;
+    let {page, size, minLat, maxLat,minLng, maxLng, minPrice, maxPrice} = req.query;
 
     if (page === undefined) page = 1;
     if (size === undefined) size = 10;
@@ -538,17 +538,44 @@ router.get('/', validateQueryFilters, async (req, res) => {
         limit: size,
         offset: size * (page - 1)
     };
+    let parameters = {}
 
+    if(minLat && maxLat){
+        parameters.lat = {[Sequelize.Op.between]: [minLat, maxLat]} 
+    } else if(minLat){
+        parameters.lat = {[Sequelize.Op.gte]: minLat };
+    }else if (maxLat) {
+        parameters.Lat = {[Sequelize.Op.lte]: maxLat};
+    }
+
+    if(minLng && maxLng){
+        parameters.lng = {[Sequelize.Op.between]: [minLng, maxLng]}
+    }else if(minLng){
+        parameters.Lng = {[Sequelize.Op.gte]: minLng };;
+    } else if(maxLng) {
+        parameters.Lng = {[Sequelize.Op.lte]: maxLng};;
+    }
+    if(minPrice && maxPrice){
+        parameters.price = {[Sequelize.Op.between]: [minPrice, maxPrice]}
+    }else if(minPrice){
+        parameters.price = {[Sequelize.Op.gte]: minPrice };;
+    }else if(maxPrice){
+        parameters.price = {[Sequelize.Op.lte]: maxPrice};;
+    } 
+
+console.log(parameters)
     const spots = await Spot.findAll({
-        ...pagination
+        ...pagination,
+        where: parameters
     });
-    const payload = [];
+
+    const payload = [];  
     for(let i = 0; i < spots.length; i++ ){
         const spot = spots[i];
         const previewImage = await SpotImage.findAll({
             where: {
                 spotId: spot.id,
-                // preview :true
+                preview: true
             },
             attributes: ['url']
         })
@@ -564,6 +591,9 @@ router.get('/', validateQueryFilters, async (req, res) => {
         })
         const avgRating = sum/count;
 
+        let hasPreviewImage = false;
+        if(previewImage.length) hasPreviewImage = true;
+
         const spotsData = {
             id: spot.id, 
             ownerId: spot.ownerId, 
@@ -578,7 +608,7 @@ router.get('/', validateQueryFilters, async (req, res) => {
             price: spot.price,
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt, 
-            previewImage: previewImage.map(image => image.url).join(', '),
+            previewImage: hasPreviewImage ? previewImage.map(image => image.url).join(', '): 'No Preview Image found',
             avgRating: avgRating
         };
         payload.push(spotsData)
