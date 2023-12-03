@@ -290,65 +290,102 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
         })
     }
 
-    const conflictingBookingStart = await Booking.findOne({
-        where: {
+    let newBooking;
+
+    const checkStartDate = await Booking.findOne({
+        where:{
             spotId,
+            [Sequelize.Op.or]:{
+                startDate: startDate,
+                endDate: startDate,
+                [Sequelize.Op.and]: [
+                    {
+                        startDate: {
+                            [Sequelize.Op.lt]: startDate,
+                        },
+                        endDate: {
+                            [Sequelize.Op.gt]: startDate,
+                        },
+                    }   
+                ]
+            }
+        }
+    })
+
+    const checkEndDate = await Booking.findOne({
+        where:{
+            spotId,
+            [Sequelize.Op.or]:{
+                startDate: endDate,
+                endDate: endDate,
+                [Sequelize.Op.and]: [
+                    {
+                        startDate: {
+                            [Sequelize.Op.lt]: endDate,
+                        },
+                        endDate: {
+                            [Sequelize.Op.gt]: endDate,
+                        },
+                    } 
+                ]
+            }
+        }
+    })
+
+    const checkBetween = await Booking.findOne({
+        where:{
             [Sequelize.Op.or]: [
                 {
-                    endDate: {
-                        [Sequelize.Op.between]: [startDate, endDate]
-                    }
+                    [Sequelize.Op.and]: [
+                        { startDate: { [Sequelize.Op.lt]: startDate } },
+                        { endDate: { [Sequelize.Op.gt]: endDate } },
+                    ],
                 },
-                {
-                    endDate: endDate // Equal to the end date
-                },
-                {
-                    endDate: startDate // Equal to the start date
-                }
-            ]}
-    });
-    const conflictingBookingEnd = await Booking.findOne({
-        where: {
-            spotId,
-            [Sequelize.Op.or]: [
                 {
                     startDate: {
                         [Sequelize.Op.between]: [startDate, endDate]
                     }
                 },
                 {
-                    startDate: endDate
-                },
-                {
-                    startDate: startDate
+                    endDate: {
+                        [Sequelize.Op.between]: [startDate, endDate]
+                    }
                 }
-            ]}
-        });
+            ]
+        }
+    })
 
-    let newBooking;
-
-    if(conflictingBookingStart === null && conflictingBookingEnd === null){
-        newBooking = await Booking.create({
-            spotId,
+    if(checkStartDate === null && checkEndDate === null && checkBetween === null){
+        newBooking= Booking.build({
+            spotId: spotId,
             userId: req.user.id,
-            startDate,
-            endDate
-        });
-    } else if (conflictingBookingStart !== null){
+            startDate: startDate,
+            endDate: endDate
+        })
+        await newBooking.save()
+
+    }else {
+        if(checkStartDate){
+            return res.status(403).json({
+                message: 'Sorry, this spot is already booked for the specified dates',
+                errors: {
+                    "startDate": "Start date conflicts with an existing booking"
+                }
+        })
+        }
+
+        if(checkEndDate){
+            return res.status(403).json({
+                message: 'Sorry, this spot is already booked for the specified dates',
+                errors: {
+                    "endDate": "End date conflicts with an existing booking"
+                }
+            })
+        }
         return res.status(403).json({
             message: 'Sorry, this spot is already booked for the specified dates',
-            errors: {
-                "startDate": "Start date conflicts with an existing booking"
-            }
-    })
-    } else {
-        return res.status(403).json({
-            message: 'Sorry, this spot is already booked for the specified dates',
-            errors: {
-                "endDate": "End date conflicts with an existing booking"
-            }
-    })
-    }
+        })
+        }
 
     res.json(newBooking)
 })
