@@ -116,7 +116,7 @@ router.post('/:spotId/images', requireAuth, async (req, res)=> {
 
     const {url, preview} = req.body
     const newSpotImage = SpotImage.build({
-        spotId: req.params.spotId,
+        spotId: parseInt(req.params.spotId),
         url,
         preview
     })
@@ -195,7 +195,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res)=>{
     const {review, stars} = req.body
     const newReview = Review.build({
         userId: req.user.id,
-        spotId: req.params.spotId,
+        spotId: parseInt(req.params.spotId),
         review,
         stars
     })
@@ -291,7 +291,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
     }
 
     let newBooking;
-
+    console.log("start and end dates:", startDate, endDate)
     const checkStartDate = await Booking.findOne({
         where:{
             spotId,
@@ -301,17 +301,17 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
                 [Sequelize.Op.and]: [
                     {
                         startDate: {
-                            [Sequelize.Op.lt]: startDate,
+                            [Sequelize.Op.lte]: startDate,
                         },
                         endDate: {
-                            [Sequelize.Op.gt]: startDate,
+                            [Sequelize.Op.gte]: startDate,
                         },
                     }   
                 ]
             }
         }
     })
-
+    console.log("checkStartDate:",checkStartDate)
     const checkEndDate = await Booking.findOne({
         where:{
             spotId,
@@ -321,24 +321,24 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
                 [Sequelize.Op.and]: [
                     {
                         startDate: {
-                            [Sequelize.Op.lt]: endDate,
+                            [Sequelize.Op.lte]: endDate,
                         },
                         endDate: {
-                            [Sequelize.Op.gt]: endDate,
+                            [Sequelize.Op.gte]: endDate,
                         },
                     } 
                 ]
             }
         }
     })
-
+    console.log('check end Dates:',checkEndDate)
     const checkBetween = await Booking.findOne({
         where:{
             [Sequelize.Op.or]: [
                 {
                     [Sequelize.Op.and]: [
-                        { startDate: { [Sequelize.Op.lt]: startDate } },
-                        { endDate: { [Sequelize.Op.gt]: endDate } },
+                        { startDate: { [Sequelize.Op.lte]: startDate } },
+                        { endDate: { [Sequelize.Op.gte]: endDate } },
                     ],
                 },
                 {
@@ -354,7 +354,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
             ]
         }
     })
-
+    console.log('check between dates:',checkBetween)
     if(checkStartDate === null && checkEndDate === null && checkBetween === null){
         newBooking= Booking.build({
             spotId: spotId,

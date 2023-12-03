@@ -118,7 +118,11 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
                         },
                     }   
                 ]
+            },
+            id: {
+                [Sequelize.Op.ne]: bookingId // Exclude the booking being updated
             }
+
         }
     })
     const checkStartOnEnd = await Booking.findOne({
@@ -142,6 +146,9 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
                         },
                     } 
                 ]
+            },
+            id: {
+                [Sequelize.Op.ne]: bookingId // Exclude the booking being updated
             }
         }
     })
@@ -165,7 +172,10 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
                         [Sequelize.Op.between]: [startDate, endDate]
                     }
                 }
-            ]
+            ],
+            id: {
+                [Sequelize.Op.ne]: bookingId // Exclude the booking being updated
+            }
         }
     })
 

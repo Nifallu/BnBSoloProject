@@ -44,6 +44,7 @@ router.post(
         err.status = 401;
         err.title = 'Login failed';
         err.errors = { credential: 'The provided credentials were invalid.' };
+        delete err.stack
         return next(err);
       }
   

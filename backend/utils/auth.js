@@ -71,13 +71,9 @@ const requireAuth = function (req, _res, next) {
     err.title = 'Authentication required';
     err.errors = { message: 'Authentication required' };
     err.status = 401;
+    delete err.stack;
     return next(err);
   }
 
-  // const ownerAuth = function (req, res, next) {
-  //   if (req.user.id === req.params.id){
-
-  //   }
-  // }
 
   module.exports = { setTokenCookie, restoreUser, requireAuth };

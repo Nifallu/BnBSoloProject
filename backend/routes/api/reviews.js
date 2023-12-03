@@ -80,7 +80,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res)=>{
     }
     const {url} = req.body
     const newReviewImg = ReviewImage.build({
-        reviewId: req.params.reviewId,
+        reviewId: parseInt(req.params.reviewId),
         url: url
     });
     await newReviewImg.save();
