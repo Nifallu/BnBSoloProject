@@ -33,7 +33,7 @@ router.delete('/spot-images/:imageId',requireAuth, async (req, res)=>{
 
   if(image === null){
     const error = new Error("Spot Image couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -58,7 +58,7 @@ router.delete('/review-images/:imageId',requireAuth, async (req, res)=>{
 
   if(image === null){
     const error = new Error("Review Image couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }

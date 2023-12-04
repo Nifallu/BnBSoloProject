@@ -106,7 +106,7 @@ router.post('/:spotId/images', requireAuth, async (req, res)=> {
     const spot = await Spot.findByPk(req.params.spotId)
 
     if(spot===null){
-        res.status(404).json({
+        return res.status(404).json({
             message: "Spot couldn't be found"
         });
     }
@@ -140,7 +140,7 @@ router.get('/:spotId/reviews', async (req, res)=>{
 
     if(spot===null){
         const error = new Error("Spot couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -179,7 +179,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res)=>{
     const spot = await Spot.findByPk(req.params.spotId)
 
     if(spot===null){
-        res.status(404).json({
+       return res.status(404).json({
             message: "Spot couldn't be found"
         });
     }
@@ -213,7 +213,7 @@ router.get('/:spotId/bookings', requireAuth, async (req, res)=>{
     
     if(spot===null){
         const error = new Error("Spot couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -282,7 +282,7 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
 
     if(spot===null){
         const error = new Error("Spot couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -399,7 +399,7 @@ router.get('/:spotId', async(req, res) =>{
 
     if(spot===null){
         const error = new Error("Spot couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -448,7 +448,7 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res)=>{
 
     if(spot===null){
         const error = new Error("Spot couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -479,7 +479,7 @@ router.delete('/:spotId', requireAuth, async (req, res)=>{
 
     if(spot===null){
         const error = new Error("Spot couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -606,11 +606,11 @@ console.log(parameters)
             city: spot.city,
             state: spot.state, 
             country: spot.country, 
-            lat: +spot.lat.toFixed(6), 
-            lng: +spot.lng.toFixed(6), 
+            lat: parseFloat(spot.lat), 
+            lng: parseFloat(spot.lng), 
             name: spot.name, 
             description: spot.description, 
-            price: +spot.price.toFixed(2),
+            price: parseFloat(spot.price),
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt, 
             previewImage: hasPreviewImage ? previewImage.map(image => image.url).join(', '): 'No Preview Image found',

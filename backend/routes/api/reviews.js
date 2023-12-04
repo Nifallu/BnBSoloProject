@@ -60,7 +60,7 @@ router.get('/current', requireAuth, async (req, res)=>{
 router.post('/:reviewId/images', requireAuth, async (req, res)=>{
     const review = await Review.findByPk(req.params.reviewId)
     if(review === null){
-        res.status(404).json({
+        return res.status(404).json({
             message: "Review couldn't be found"
         });
     }
@@ -134,7 +134,7 @@ router.delete('/:reviewId', requireAuth, async (req, res)=> {
 
     if(review===null){
         const error = new Error("Review couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }

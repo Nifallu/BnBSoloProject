@@ -81,7 +81,7 @@ router.put('/:bookingId', requireAuth, validateBooking, async (req,res)=> {
 
     if(booking===null){
         const error = new Error("Booking couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
@@ -214,7 +214,7 @@ router.delete('/:bookingId', requireAuth, async (req,res)=>{
 
     if(booking === null){
         const error = new Error("Booking couldn't be found")
-        res.status(404).json({
+        return res.status(404).json({
             message: error.message,
         });
     }
