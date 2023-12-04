@@ -60,7 +60,8 @@ router.get('/current', requireAuth, async (req, res)=>{
         const spot = userSpots[i];
         const previewImage = await SpotImage.findAll({
             where: {
-                spotId: spot.id
+                spotId: spot.id,
+                preview: true
             },
             attributes: ['url']
         })
@@ -76,6 +77,8 @@ router.get('/current', requireAuth, async (req, res)=>{
         })
         const avgRating = sum/count;
 
+        let previewImg = false;
+        if(previewImage.length) previewImg = true;
         const spotsData = {
             id: spot.id, 
             ownerId: spot.ownerId, 
@@ -90,7 +93,7 @@ router.get('/current', requireAuth, async (req, res)=>{
             price: spot.price,
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt, 
-            previewImage: previewImage.map(image => image.url).join(', '),
+            previewImage: previewImg ? previewImage.map(image => image.url).join(', '): 'No Preview Image found',
             avgRating: avgRating
         };
         Spots.push(spotsData)
@@ -357,8 +360,8 @@ router.post('/:spotId/bookings', requireAuth, validateBooking, async (req, res)=
     console.log('check between dates:',checkBetween)
     if(checkStartDate === null && checkEndDate === null && checkBetween === null){
         newBooking= Booking.build({
-            spotId: spotId,
             userId: req.user.id,
+            spotId: parseInt(spotId),
             startDate: startDate,
             endDate: endDate
         })
@@ -414,7 +417,8 @@ router.get('/:spotId', async(req, res) =>{
     
     const SpotImages = await SpotImage.findAll({
         where: {
-            spotId: spot.id
+            spotId: spot.id,
+            preview: true
         },
         attributes: ['id', 'url', 'preview']
     })
@@ -424,12 +428,13 @@ router.get('/:spotId', async(req, res) =>{
         },
         attributes: ['id', 'firstName', 'lastName']
     })
-
+    let checkPreviewImg = false;
+    if(SpotImage.length) checkPreviewImg = true;
     res.json({
         spot,
         numReviews,
         avgRating,
-        SpotImages,
+        SpotImages: checkPreviewImg ? SpotImages: "No Preview Image found",
         Owner
 
     })
@@ -601,11 +606,11 @@ console.log(parameters)
             city: spot.city,
             state: spot.state, 
             country: spot.country, 
-            lat: spot.lat, 
-            lng: spot.lng, 
+            lat: +spot.lat.toFixed(6), 
+            lng: +spot.lng.toFixed(6), 
             name: spot.name, 
             description: spot.description, 
-            price: spot.price,
+            price: +spot.price.toFixed(2),
             createdAt: spot.createdAt,
             updatedAt: spot.updatedAt, 
             previewImage: hasPreviewImage ? previewImage.map(image => image.url).join(', '): 'No Preview Image found',

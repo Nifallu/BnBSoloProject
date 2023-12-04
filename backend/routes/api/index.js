@@ -57,7 +57,7 @@ router.delete('/review-images/:imageId',requireAuth, async (req, res)=>{
   const image = await ReviewImage.findByPk(req.params.imageId)
 
   if(image === null){
-    const error = new Error("Spot Image couldn't be found")
+    const error = new Error("Review Image couldn't be found")
         res.status(404).json({
             message: error.message,
         });

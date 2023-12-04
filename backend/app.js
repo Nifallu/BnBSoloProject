@@ -53,7 +53,6 @@ if (!isProduction) {
     err.title = "Resource Not Found";
     err.errors = { message: "The requested resource couldn't be found." };
     err.status = 404;
-    delete err.stack
     next(err);
   });
 
