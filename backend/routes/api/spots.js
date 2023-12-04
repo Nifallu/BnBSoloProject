@@ -643,20 +643,23 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
         spotInfo
     )
     await newSpot.save()
-    
+
     const response = {
-        address: spotInfo.address,
-        city: spotInfo.city,
-        state: spotInfo.state,
-        country: spotInfo.country,
-        lat: spotInfo.lat,
-        lng: spotInfo.lng,
-        name: spotInfo.name,
-        description: spotInfo.description,
-        price: spotInfo.price
+        id: newSpot.id,
+        ownerId: newSpot.ownerId,
+        address: newSpot.address,
+        city: newSpot.city,
+        state: newSpot.state,
+        country: newSpot.country,
+        lat: newSpot.lat,
+        lng: newSpot.lng,
+        name: newSpot.name,
+        description: newSpot.description,
+        price: newSpot.price,
+        createdAt: newSpot.createdAt,
+        updatedAt: newSpot.updatedAt
         
     }
-
     res.json(response)
 })
 
