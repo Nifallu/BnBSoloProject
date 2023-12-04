@@ -626,6 +626,7 @@ console.log(parameters)
   //Create a spot
 router.post('/', requireAuth, validateSpot,  async (req, res)=>{
     const {address, city, state, country, lat, lng, name, description, price} = req.body
+    
     const spotInfo = {}
     spotInfo.ownerId = req.user.id;
         spotInfo.address = address
