@@ -67,7 +67,7 @@ module.exports = {
         ownerId: 5,
         address: '123 missing st',
         city: 'Lost',
-        state: 'N/A',
+        state: 'NA',
         country: 'nowhere',
         lat: 25.0000,
         lng: 71.0000,

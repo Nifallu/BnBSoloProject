@@ -44,9 +44,9 @@ router.get('/current', requireAuth, async (req, res)=>{
         Spot: {
             ...review.Spot.toJSON(),
             previewImage: review.Spot.previewImage.map((image) => image.url).join(', '),
-            lat: +review.Spot.lat.toFixed(6), // Displaying lat as a decimal with 6 places
-            lng: +review.Spot.lng.toFixed(6), 
-            price: +review.Spot.price.toFixed(2) //Displaying price to 2 decimal places
+            lat: parseFloat(review.Spot.lat), // Displaying lat as a decimal with 6 places
+            lng: parseFloat(review.Spot.lng), 
+            price: parseFloat(review.Spot.price) //Displaying price to 2 decimal places
         },
     }));
     
