@@ -633,18 +633,31 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
         spotInfo.city = city
         spotInfo.state = state
         spotInfo.country = country
-        spotInfo.lat = +lat
-        spotInfo.lng = +lng
+        spotInfo.lat = lat
+        spotInfo.lng = lng
         spotInfo.name = name
         spotInfo.description = description
-        spotInfo.price = +price
+        spotInfo.price = price
     
     const newSpot = Spot.build(
         spotInfo
     )
     await newSpot.save()
+    
+    const response = {
+        address: spotInfo.address,
+        city: spotInfo.city,
+        state: spotInfo.state,
+        country: spotInfo.country,
+        lat: spotInfo.lat,
+        lng: spotInfo.lng,
+        name: spotInfo.name,
+        description: spotInfo.description,
+        price: spotInfo.price
+        
+    }
 
-    res.json(newSpot)
+    res.json(response)
 })
 
 module.exports = router;
