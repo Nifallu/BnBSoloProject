@@ -632,11 +632,11 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
         spotInfo.city = city
         spotInfo.state = state
         spotInfo.country = country
-        spotInfo.lat = lat
-        spotInfo.lng = lng
+        spotInfo.lat = parseFloat(lat)
+        spotInfo.lng = parseFloat(lng)
         spotInfo.name = name
         spotInfo.description = description
-        spotInfo.price = price 
+        spotInfo.price = parseFloat(price) 
     
     const newSpot = Spot.build(
         spotInfo
