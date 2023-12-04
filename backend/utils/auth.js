@@ -4,7 +4,7 @@ const { jwtConfig } = require('../config');
 const { User } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
-
+const isProduction = environment === 'production'
 
 // Sends a JWT Cookie
 const setTokenCookie = (res, user) => {

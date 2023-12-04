@@ -651,11 +651,11 @@ router.post('/', requireAuth, validateSpot,  async (req, res)=>{
         city: newSpot.city,
         state: newSpot.state,
         country: newSpot.country,
-        lat: newSpot.lat,
-        lng: newSpot.lng,
+        lat: parseFloat(newSpot.lat),
+        lng: parseFloat(newSpot.lng),
         name: newSpot.name,
         description: newSpot.description,
-        price: newSpot.price,
+        price: parseFloat(newSpot.price),
         createdAt: newSpot.createdAt,
         updatedAt: newSpot.updatedAt
         
