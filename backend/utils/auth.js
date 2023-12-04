@@ -4,7 +4,7 @@ const { jwtConfig } = require('../config');
 const { User } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
-const isProduction = environment === 'production'
+
 
 // Sends a JWT Cookie
 const setTokenCookie = (res, user) => {
@@ -62,17 +62,10 @@ const setTokenCookie = (res, user) => {
     });
   };
 
-  
   // If there is no current user, return an error
 const requireAuth = function (req, _res, next) {
     if (req.user) return next();
 
-    if(isProduction){
-        const err = new Error('Authentication required');
-        err.status = 401;
-        delete err.stack;
-return next(err);
-    }
   
     const err = new Error('Authentication required');
     err.title = 'Authentication required';
