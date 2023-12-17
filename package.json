@@ -18,6 +18,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "build": "vite build --watch"
   
 }
