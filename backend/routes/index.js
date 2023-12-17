@@ -1,4 +1,3 @@
-// Add a XSRF-TOKEN cookie in development
 const express = require('express');
 const router = express.Router();
 const apiRouter = require('./api');
