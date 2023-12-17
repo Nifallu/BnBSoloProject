@@ -1,0 +1,13 @@
+/* Style for the visible dropdown */
+.profile-dropdown {
+    width: 150px;
+    background-color: rgb(212, 231, 237);
+    border: 1px solid #ccc;
+    padding: 10px;
+    list-style: none;
+  }
+  
+  /* Style to hide the dropdown */
+  .hidden {
+    display: none;
+  }
