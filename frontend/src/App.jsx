@@ -3,10 +3,15 @@ import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation';
 import * as sessionActions from './store/session';
+import SpotsList from './components/Spots/SpotsList'
+import SpotDetail from './components/Spots/SpotDetails';
+
 
 function Layout() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
+
+
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => {
@@ -18,8 +23,32 @@ function Layout() {
     <>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && <Outlet />}
+
     </>
   );
+}
+
+function Spots(){
+  const [spots, setSpots] = useState([]);
+
+  useEffect(()=>{
+    const fetchSpots = async () => {
+      try{
+      const response = await fetch('/api/spots')
+      const data = await response.json();
+      setSpots(data);
+      }
+      catch (error) {
+        console.error('unable to fetch spots', error)
+      }
+    };
+
+    fetchSpots();
+  }, [])
+
+  return (
+    <SpotsList spots={spots}/>
+  )
 }
 
 const router = createBrowserRouter([
@@ -28,10 +57,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Welcome!</h1>
-      }
+        element: <>
+        <h1>Welcome!</h1>
+        <Spots />
+        </>
+      },
+      {
+        path: 'spot/:spotId',
+        element: <SpotDetail />
+    
+      },
     ]
-  }
+  },
+
 ]);
 
 function App() {
