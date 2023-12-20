@@ -429,14 +429,13 @@ router.get('/:spotId', async(req, res) =>{
         attributes: ['id', 'firstName', 'lastName']
     })
     let checkPreviewImg = false;
-    if(SpotImage.length) checkPreviewImg = true;
+    if(SpotImages.length) checkPreviewImg = true;
     res.json({
         spot,
         numReviews,
         avgRating,
-        SpotImages: checkPreviewImg ? SpotImages: "No Preview Image found",
+        SpotImages: checkPreviewImg ? SpotImages : "No Preview Image found",
         Owner
-
     })
 } )
 
