@@ -35,8 +35,9 @@ router.get('/current', requireAuth, async (req, res)=>{
             {
                 model: ReviewImage,
                 attributes: ['id', 'url']
-            }
-        ]
+            },
+        ],
+        order: [['createdAt', DESC]]
     })
 
     const formattedReviews = reviews.map((review) => ({

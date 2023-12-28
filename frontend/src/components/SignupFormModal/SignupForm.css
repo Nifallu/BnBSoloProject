@@ -1,0 +1,29 @@
+.signUpModal {
+    display:flex;
+    flex-direction: column;
+    width: 500px;
+    text-align: center;
+}
+
+.signUpModal input {
+    margin: 10px;
+    width: 80%
+}
+
+.Submit {
+    width: 85%;
+    margin: 10px;
+    margin-bottom: 20px;
+    height: 50px;
+    font-weight: bolder;
+    font-size: large;
+}
+
+.loginModal {
+    text-align: center;
+}
+
+.loginModal input {
+    width: 80%;
+    margin: 10px;
+}

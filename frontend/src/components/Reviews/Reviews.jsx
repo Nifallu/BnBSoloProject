@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux/es/hooks/useSelector";
 
 
 const Reviews = () =>{
-    // console.log(useParams);
+
     const {spotId} = useParams();
-    const [reviews, setReviews] = useState({ reviews: [] })
-    
+    const reviews = useSelector((state) => state.review.reviews[spotId] || []);
+
     useEffect(()=>{
         const fetchReviews = async () =>{
             const response = await fetch(`/api/spots/${spotId}/reviews`);
             const data = await response.json();
+            console.log(data)
 
             if(response.ok){
                 setReviews(data)

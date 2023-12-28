@@ -1,0 +1,40 @@
+.form {
+    margin: auto;
+    text-align: center;
+    width: 50%;
+    background-color: #2d2d2d;
+    padding: 25px;
+    padding-right: 50px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgb(16, 29, 29);
+}
+input {
+    width: 100%;
+    padding: 10px;
+    color:#2d2d2d
+}
+p{
+    color: antiquewhite;
+}
+.cityState {
+    display: flex;
+    justify-content: space-between;
+}
+.city {
+    width: 50%;
+}
+
+.errors{
+    position: relative;
+    color:rgb(203, 66, 66);
+    margin: 0px;
+    text-align: left;
+}
+
+label {
+    color: antiquewhite;
+}
+
+.description {
+    height: 100px;
+}

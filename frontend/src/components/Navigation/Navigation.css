@@ -1,13 +1,59 @@
-/* Style for the visible dropdown */
+* {
+  color: lightskyblue;
+}
+
+body {
+  background-color: #0d1016;
+}
+
 .profile-dropdown {
     width: 150px;
-    background-color: rgb(212, 231, 237);
+    background-color: #2d2d2d;
     border: 1px solid #ccc;
     padding: 10px;
     list-style: none;
+    position: absolute;
+    right: 20px;
+    top: 65px;
+    border-radius: 10px;
+    color:#0d1016;
+  }
+
+  .navigationBar {
+    background-color: #2d2d2d;
+    width: 100%;
+    border-radius: 20px;
   }
   
-  /* Style to hide the dropdown */
+
   .hidden {
     display: none;
+  }
+
+  .home {
+    text-decoration: none;
+    font-size: 40px;
+    background-color: #2d2d2d;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .menuButton {
+    position: absolute;
+    right: 20px;
+    top: 5px;
+    font-size: 20px;
+    border-radius: 15px;
+    padding: 8px;
+    width: 100px;
+    background-color: #2d2d2d;
+  }
+
+  .createSpot {
+    position: absolute;
+    right: 150px;
+    top: 30px;
+    background-color: #2d2d2d;
   }

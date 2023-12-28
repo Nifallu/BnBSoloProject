@@ -157,7 +157,8 @@ router.get('/:spotId/reviews', async (req, res)=>{
             model: ReviewImage,
             attributes: ['url']
         } 
-        ]       
+        ],
+        order: [['createdAt', 'DESC']]      
     })
     res.json({
         reviews
@@ -570,7 +571,8 @@ router.get('/', validateQueryFilters, async (req, res) => {
 console.log(parameters)
     const spots = await Spot.findAll({
         ...pagination,
-        where: parameters
+        where: parameters,
+        order: [['createdAt', 'DESC']]
     });
 
     const payload = [];  

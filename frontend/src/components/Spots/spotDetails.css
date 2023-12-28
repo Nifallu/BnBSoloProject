@@ -1,0 +1,85 @@
+*{
+    text-decoration: none;
+}
+
+.spotInfo {
+    display: flex;
+}
+
+.spotReserve{
+    text-align: center;
+    border: 2px lightgrey solid;
+    width: 35%;
+    margin-left: auto;
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+.priceRating{
+    display:flex;
+    justify-content: space-between;
+    padding: 20px;
+    padding-top: 0px;
+}
+.reserve {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: large;
+    font-weight: bold;
+}
+
+.images {
+    border-radius: 10px;
+    width: 100%;
+}
+
+button {
+    background-color: #2d2d2d;
+    border-radius: 5px;
+    padding: 10px 10px;
+    margin: 10px;
+    border-color: lightblue;
+    font-weight: bold;
+}
+
+.ReviewModal {
+    background-color: #2d2d2d;
+    width: 300px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.reviewTextarea{
+    width: 80%;
+    height: 60px;
+}
+#modal-content{
+    background-color: #2d2d2d;
+    border: 2px solid lightgrey;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgb(16, 29, 29);
+}
+
+.spotImages {
+    display: grid;
+    grid-template-areas: 
+        "a a b c"
+        "a a d e"; 
+    margin: auto;
+    width: fit-content;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.spotImages img:first-child {
+    grid-area: a;
+}
+
+.ReviewButton {
+    border-radius: 5px;
+    border: 2px solid lightblue;
+}
