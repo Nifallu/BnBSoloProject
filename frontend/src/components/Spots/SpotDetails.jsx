@@ -92,7 +92,7 @@ const SpotDetail = () => {
                     <div className="priceRating">
                         <p className="price">${spotData && spotData.spot.price} night</p>
                         <p className="rating"> ⭐
-                        {spotData && spotData.avgRating}{' '} 
+                        {spotData && parseFloat(spotData.avgRating).toFixed(1)}{' '} 
                         {spotData && spotData.numReviews === 0 && 'New'}
                         {spotData && spotData.numReviews > 0 && (spotData.numReviews === 1 ? `•  1 Review` : `•  ${spotData.numReviews} Reviews`)}
                         </p>
@@ -103,13 +103,12 @@ const SpotDetail = () => {
         </div>
         <hr></hr>
         <h3>⭐
-                {spotData && spotData.avgRating}{' '}
+                {spotData && parseFloat(spotData.avgRating).toFixed(1)}{' '}
                 {spotData && spotData.numReviews === 0 && 'New'}
                 {spotData && spotData.numReviews > 0 && (spotData.numReviews === 1 ? ` •  1 Review` : ` •  ${spotData.numReviews} Reviews`)}
         </h3>
         {currentUser && currentUser.id !== ownerId && reviews && (reviews.reviews.length === 0 ? (
                 <OpenModalMenuItem
-                className='ReviewButton'
                 class='openModal'
                 itemText="Be the first to post a Review!"
                 onItemClick={closeMenu}
@@ -117,7 +116,6 @@ const SpotDetail = () => {
             />) : (
         !reviews.reviews.some((review) => review.userId === currentUser.id) && (
             <OpenModalMenuItem
-                className='ReviewButton'
                 class='openModal'
                 itemText="Post Your Review"
                 onItemClick={closeMenu}

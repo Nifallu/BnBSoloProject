@@ -75,7 +75,7 @@ router.get('/current', requireAuth, async (req, res)=>{
                 spotId: spot.id
             }
         })
-        const avgRating = sum/count;
+        const avgRating = (sum/count);
 
         let previewImg = false;
         if(previewImage.length) previewImg = true;

@@ -6,6 +6,7 @@ import * as sessionActions from './store/session';
 import SpotsList from './components/Spots/SpotsList'
 import SpotDetail from './components/Spots/SpotDetails';
 import CreateSpotForm from './components/CreateSpot/CreateSpot';
+import ManageSpots from './components/ManageSpot/ManageSpots';
 
 
 function Layout() {
@@ -47,8 +48,6 @@ function Spots(){
     fetchSpots();
   }, [])
 
-
-
   return (
     <div>
     <SpotsList spots={spots}/>
@@ -67,6 +66,11 @@ const router = createBrowserRouter([
         </>
       },
       {
+        path: 'spots/current',
+        element:
+        <ManageSpots />
+      },
+      {
         path: 'spot/:spotId',
         element: <>
         <SpotDetail />
@@ -76,7 +80,8 @@ const router = createBrowserRouter([
         path: 'spots/new',
         element: 
         <CreateSpotForm />
-      }
+      },
+
     ]
   },
 

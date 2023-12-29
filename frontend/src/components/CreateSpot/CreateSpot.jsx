@@ -5,11 +5,19 @@ import { useDispatch } from "react-redux";
 import { csrfFetch } from "../../store/csrf";
 import { createImages } from "../../store/images";
 import { addSpot } from "../../store/spots"
+import { useLocation } from "react-router-dom";
+
+
+
 
 
 const CreateSpotForm = () =>{
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const { state } = useLocation();
+    const spotId = state?.spotId || null;
+
     const [formData, setFormData] = useState({
         address: "",
         city: "",
@@ -24,6 +32,7 @@ const CreateSpotForm = () =>{
     })
 
     const[validation, setValidations] = useState({})
+    const[isUpdating, setIsUpdating] = useState(false);
 
     useEffect(()=>{
         const validationObj = {};
@@ -70,37 +79,55 @@ const CreateSpotForm = () =>{
         setValidations(validationObj)
     }, [ formData ])
 
+    useEffect(()=>{
+        if(spotId){
+            const fetchSpotData = async ()=>{
+                const response = await fetch(`/api/spots/${spotId}`);
+                if (response.ok) {
+                    const spotData = await response.json();
+                    setFormData({
+                        ...formData,
+                        address: spotData.spot.address || '',
+                        city: spotData.spot.city || '',
+                        state: spotData.spot.state || '',
+                        country: spotData.spot.country || '',
+                        lat: spotData.spot.lat || '0',
+                        lng: spotData.spot.lng || '0',
+                        name: spotData.spot.name || '',
+                        description: spotData.spot.description|| '',
+                        price: spotData.spot.price || '',
+                    });
+                    setIsUpdating(true);
+                }
+            };
+    
+            fetchSpotData();
+        }
+    }, [spotId])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (Object.keys(validation).length === 0) {
-            const response = await csrfFetch('/api/spots', {
-                method: 'POST',
+            const endpoint = isUpdating ? `/api/spots/${spotId}` : '/api/spots';
+
+            const response = await csrfFetch(endpoint, {
+                method: isUpdating ? 'PUT' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData)
             })
             if(response.ok){
-                console.log(
-                    formData.address,
-                    formData.city,
-                    formData.state,
-                    formData.country,
-                    formData.name,
-                    formData.description,
-                    formData.price
-                )
 
             const result = await response.json();
-            const spotId = result.id;
+            const updateSpotId = result.id || spotId
 
-            dispatch(createImages(formData.images, spotId));
+            dispatch(createImages(formData.images, updateSpotId));
 
             dispatch(addSpot(result));
 
-            navigate(`/spot/${spotId}`);
+            navigate(`/spot/${updateSpotId}`);
             }
             
         } else {
@@ -127,7 +154,7 @@ const CreateSpotForm = () =>{
 
     return (
         <form onSubmit={handleSubmit} className="form">
-            <h1>Create a New Spot</h1>
+            <h1>{isUpdating ? 'Update Spot': 'Create a New Spot'}</h1>
             <h2>Where&apos;s your place located?</h2>
             <p>Guests will only get your exact address once they booked a reservation.</p>
             <div>
@@ -232,7 +259,7 @@ const CreateSpotForm = () =>{
                             {index === 0 && 'previewImage' in validation && (
                                 <p className="errors">{validation.previewImage}</p>
                             )}
-                            {index > 0 && 'imageFormat' in validation && (
+                            {index >= 0 && 'imageFormat' in validation && (
                                 <p className="errors">{validation.imageFormat}</p>
                             )}
                     </div>
@@ -240,7 +267,7 @@ const CreateSpotForm = () =>{
             </div>
             <button 
             type="submit"
-            disabled={Object.values(validation).length > 0}>Create Spot</button>
+            disabled={Object.values(validation).length > 0}>{isUpdating ?'Update Spot' : 'Create Spot'}</button>
         </form>
     )
 }

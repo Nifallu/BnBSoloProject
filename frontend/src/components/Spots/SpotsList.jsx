@@ -1,6 +1,5 @@
 import './SpotsList.css'
 import { NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
 
 const SpotsList = ({ spots }) => {
     const spotList = spots.Spots || [];
@@ -28,13 +27,6 @@ const SpotsList = ({ spots }) => {
         })}
       </div>
     );
-  };
-
-  const mapStateToProps = (state) => {
-    console.log('mapping state', state)
-    return {
-      spots: state.spotsReducer.spots,
-    };
   };
   
   export default (SpotsList);
