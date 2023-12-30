@@ -83,3 +83,18 @@ button {
     border-radius: 5px;
     border: 2px solid lightblue;
 }
+
+.deleteButtons {
+    display: flex;
+    flex-direction: column;
+    margin: 10px
+}
+
+.DeleteSpotModal{
+    text-align: center;
+    padding: 10px;
+}
+.delete {
+    background-color: red;
+    color: white
+}

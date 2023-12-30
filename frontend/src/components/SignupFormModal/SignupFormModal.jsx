@@ -14,6 +14,11 @@ function SignupFormModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+  const isButtonDisabled =
+    email === "" ||
+    username.length < 4 ||
+    password.length < 6 ||
+    confirmPassword === "";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,7 +30,7 @@ function SignupFormModal() {
           username,
           firstName,
           lastName,
-          password
+          password,
         })
       )
         .then(closeModal)
@@ -37,7 +42,7 @@ function SignupFormModal() {
         });
     }
     return setErrors({
-      confirmPassword: "Confirm Password field must be the same as the Password field"
+      confirmPassword: "Confirm Password field must be the same as the Password field",
     });
   };
 
@@ -48,7 +53,7 @@ function SignupFormModal() {
         <label>
           <input
             placeholder='Email'
-            type="text"
+            type='text'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -58,7 +63,7 @@ function SignupFormModal() {
         <label>
           <input
             placeholder='Username'
-            type="text"
+            type='text'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -68,7 +73,7 @@ function SignupFormModal() {
         <label>
           <input
             placeholder='First Name'
-            type="text"
+            type='text'
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
@@ -78,7 +83,7 @@ function SignupFormModal() {
         <label>
           <input
             placeholder='Last Name'
-            type="text"
+            type='text'
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
@@ -88,7 +93,7 @@ function SignupFormModal() {
         <label>
           <input
             placeholder='Password'
-            type="password"
+            type='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -98,16 +103,24 @@ function SignupFormModal() {
         <label>
           <input
             placeholder='Confirm Password'
-            type="password"
+            type='password'
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
         </label>
-        {errors.confirmPassword && (
-          <p>{errors.confirmPassword}</p>
+        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        <button className='Submit' type='submit' disabled={isButtonDisabled}>
+          Sign Up
+        </button>
+        {isButtonDisabled && username !== "" && username.length < 4 && (
+        <p>Username must be 4 characters or longer</p>
         )}
-        <button className='Submit 'type="submit">Sign Up</button>
+
+        {isButtonDisabled && password !== "" && password.length < 6 &&(
+        <p>Password must be 6 characters or longer</p>
+        )}
+
       </form>
     </div>
   );

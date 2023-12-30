@@ -53,15 +53,17 @@ function ProfileButton({ user }) {
           <div className='menuList'>
             <li>{`Hello, ${user.firstName}`}</li>
             <li>{user.email}</li>
+            <hr></hr>
             <li>
               <NavLink to='/spots/current'>Manage Spots</NavLink>
             </li>
+            <hr></hr>
             <li>
               <button onClick={logout}>Log Out</button>
             </li>
           </div>
         ) : (
-          <>
+          <div className='logInButtons'>
             <OpenModalMenuItem
               itemText="Log In"
               onItemClick={closeMenu}
@@ -72,7 +74,7 @@ function ProfileButton({ user }) {
               onItemClick={closeMenu}
               modalComponent={<SignupFormModal />}
             />
-          </>
+          </div>
         )}
       </ul>
     </>

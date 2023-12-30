@@ -7,11 +7,7 @@ import { createImages } from "../../store/images";
 import { addSpot } from "../../store/spots"
 import { useLocation } from "react-router-dom";
 
-
-
-
-
-const CreateSpotForm = () =>{
+const CreateSpotForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -29,22 +25,23 @@ const CreateSpotForm = () =>{
         description: "",
         price: '',
         images: ['','','','','']
-    })
+    });
 
-    const[validation, setValidations] = useState({})
-    const[isUpdating, setIsUpdating] = useState(false);
+    const [validation, setValidations] = useState({});
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [formSubmitted, setFormSubmitted] = useState(false);
 
-    useEffect(()=>{
+    useEffect(() => {
         const validationObj = {};
-        
-        if(!formData.address) {
-            validationObj.address = 'Street address is required'
+
+        if (!formData.address) {
+            validationObj.address = 'Street address is required';
         }
-        if(!formData.city) {
-            validationObj.city = 'City is required'
+        if (!formData.city) {
+            validationObj.city = 'City is required';
         }
-        if(!formData.state){
-            validationObj.state = 'State is required'
+        if (!formData.state) {
+            validationObj.state = 'State is required';
         }
 
         if (!formData.country) {
@@ -64,24 +61,23 @@ const CreateSpotForm = () =>{
             validationObj.price = 'Price per day is required and must be a number greater than zero';
         }
 
+        const hasNonEmptyPreview = formData.images.some(image => image.trim() !== '');
+        if (!hasNonEmptyPreview) {
+            validationObj.previewImage = 'Preview image is required';
+        }
 
-    const hasNonEmptyPreview = formData.images.some(image => image.trim() !== ''); //trim takes of the white space
-    if (!hasNonEmptyPreview) {
-        validationObj.previewImage = 'Preview image is required';
-    }
+        const nonEmptyUrls = formData.images.filter(image => image.trim() !== '');
+        const UrlsHaveCorrectFormat = nonEmptyUrls.every(image => /(.png|.jpg|.jpeg)$/i.test(image));
+        if (!UrlsHaveCorrectFormat) {
+            validationObj.imageFormat = 'Image URL must end in .png, .jpg, or .jpeg';
+        }
 
-    const nonEmptyUrls = formData.images.filter(image => image.trim() !== '');  
-    const UrlsHaveCorrectFormat = nonEmptyUrls.every(image => /(.png|.jpg|.jpeg)$/i.test(image)); // $ anchor used to test the end of the line
-    if (!UrlsHaveCorrectFormat) {
-        validationObj.imageFormat = 'Image URL must end in .png, .jpg, or .jpeg';
-    }
+        setValidations(validationObj);
+    }, [formData]);
 
-        setValidations(validationObj)
-    }, [ formData ])
-
-    useEffect(()=>{
-        if(spotId){
-            const fetchSpotData = async ()=>{
+    useEffect(() => {
+        if (spotId) {
+            const fetchSpotData = async () => {
                 const response = await fetch(`/api/spots/${spotId}`);
                 if (response.ok) {
                     const spotData = await response.json();
@@ -94,19 +90,20 @@ const CreateSpotForm = () =>{
                         lat: spotData.spot.lat || '0',
                         lng: spotData.spot.lng || '0',
                         name: spotData.spot.name || '',
-                        description: spotData.spot.description|| '',
+                        description: spotData.spot.description || '',
                         price: spotData.spot.price || '',
                     });
                     setIsUpdating(true);
                 }
             };
-    
+
             fetchSpotData();
         }
-    }, [spotId])
+    }, [spotId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setFormSubmitted(true);
 
         if (Object.keys(validation).length === 0) {
             const endpoint = isUpdating ? `/api/spots/${spotId}` : '/api/spots';
@@ -116,22 +113,22 @@ const CreateSpotForm = () =>{
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
-            })
-            if(response.ok){
+                body: JSON.stringify(formData),
+            });
 
-            const result = await response.json();
-            const updateSpotId = result.id || spotId
+            if (response.ok) {
+                const result = await response.json();
+                const updateSpotId = result.id || spotId;
 
-            dispatch(createImages(formData.images, updateSpotId));
+                dispatch(createImages(formData.images, updateSpotId));
+                dispatch(addSpot(result));
 
-            dispatch(addSpot(result));
-
-            navigate(`/spot/${updateSpotId}`);
+                navigate(`/spot/${updateSpotId}`);
+            } else {
+                window.alert(result.errors);
             }
-            
         } else {
-            console.log('Validation Failed')
+            console.log('Validation Failed');
         }
     };
 
@@ -154,8 +151,8 @@ const CreateSpotForm = () =>{
 
     return (
         <form onSubmit={handleSubmit} className="form">
-            <h1>{isUpdating ? 'Update Spot': 'Create a New Spot'}</h1>
-            <h2>Where&apos;s your place located?</h2>
+            <h1>{isUpdating ? 'Update Spot' : 'Create a New Spot'}</h1>
+            <h2>Where's your place located?</h2>
             <p>Guests will only get your exact address once they booked a reservation.</p>
             <div>
                 <label>
@@ -167,7 +164,9 @@ const CreateSpotForm = () =>{
                         onChange={handleInputChange}
                         placeholder="Country"
                     />
-                    {'country' in validation && (<p className="errors">{validation.country}</p>)}
+                    {formSubmitted && 'country' in validation && (
+                        <p className="errors">{validation.country}</p>
+                    )}
                 </label>
                 <label>
                     Street Address:
@@ -178,7 +177,9 @@ const CreateSpotForm = () =>{
                         onChange={handleInputChange}
                         placeholder="Address"
                     />
-                    {'address' in validation && (<p className="errors">{validation.address}</p>)}
+                    {formSubmitted && 'address' in validation && (
+                        <p className="errors">{validation.address}</p>
+                    )}
                 </label>
                 <div className="cityState">
                     <label className="city">
@@ -190,7 +191,9 @@ const CreateSpotForm = () =>{
                             onChange={handleInputChange}
                             placeholder="City"
                         />
-                        {'city' in validation && (<p className="errors">{validation.city}</p>)}
+                        {formSubmitted && 'city' in validation && (
+                            <p className="errors">{validation.city}</p>
+                        )}
                     </label>
                     <label>
                         State:
@@ -201,7 +204,9 @@ const CreateSpotForm = () =>{
                             onChange={handleInputChange}
                             placeholder="STATE"
                         />
-                        {'state' in validation && (<p className="errors">{validation.state}</p>)}
+                        {formSubmitted && 'state' in validation && (
+                            <p className="errors">{validation.state}</p>
+                        )}
                     </label>
                 </div>
                 <hr></hr>
@@ -216,7 +221,7 @@ const CreateSpotForm = () =>{
                         onChange={handleInputChange}
                         placeholder="Pleas write at least 30 characters"
                     />
-                    {'description' in validation && (<p className="errors">{validation.description}</p>)}
+                    {formSubmitted &&  'description' in validation && (<p className="errors">{validation.description}</p>)}
                 </label>
                 <hr></hr>
                 <h2>Create a title for your spot</h2>
@@ -228,7 +233,7 @@ const CreateSpotForm = () =>{
                     onChange={handleInputChange}
                     placeholder="Name of your spot"
                 />
-                    {'name' in validation && (<p className="errors">{validation.name}</p>)}
+                    {formSubmitted && 'name' in validation && (<p className="errors">{validation.name}</p>)}
                 <hr></hr>
                 <h2>Set a base price for your spot</h2>
                 <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
@@ -240,7 +245,7 @@ const CreateSpotForm = () =>{
                         onChange={handleInputChange}
                         placeholder="Price per night (USD)"
                     />
-                    {'price' in validation && (<p className="errors">{validation.price}</p>)}
+                    {formSubmitted && 'price' in validation && (<p className="errors">{validation.price}</p>)}
                 </label>
                 <hr></hr>
                 <h2>Liven up your spot with photos</h2>
@@ -256,18 +261,21 @@ const CreateSpotForm = () =>{
                                 />
                             </p>
                         </label>
-                            {index === 0 && 'previewImage' in validation && (
+                            {index === 0 && formSubmitted && 'previewImage' in validation && (
                                 <p className="errors">{validation.previewImage}</p>
                             )}
-                            {index >= 0 && 'imageFormat' in validation && (
+                            {index >= 0 && formSubmitted &&  'imageFormat' in validation && (
                                 <p className="errors">{validation.imageFormat}</p>
                             )}
                     </div>
                 ))}               
             </div>
-            <button 
+            <button
             type="submit"
-            disabled={Object.values(validation).length > 0}>{isUpdating ?'Update Spot' : 'Create Spot'}</button>
+            // disabled={Object.values(validation).length > 0 || !formSubmitted}
+        >
+            {isUpdating ? 'Update Spot' : 'Create Spot'}
+        </button>
         </form>
     )
 }

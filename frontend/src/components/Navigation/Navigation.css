@@ -57,3 +57,12 @@ body {
     top: 30px;
     background-color: #2d2d2d;
   }
+
+  .menuList {
+    padding: 10px;
+  }
+
+  .logInButtons {
+    display: flex;
+    flex-direction: column;
+  }

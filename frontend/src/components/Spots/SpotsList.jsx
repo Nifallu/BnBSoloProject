@@ -9,7 +9,6 @@ const SpotsList = ({ spots }) => {
         {spotList.map((spot) => {
           let stars = spot.avgRating < 1 ? 'New' : spot.avgRating;
           const images= spot.previewImage.split(',')
-          console.log('images', images[0])
           return (
             <div className='card' key={spot.id}>
                 <NavLink  to={`/spot/${spot.id}`} key={spot.id} className='spotCard'>

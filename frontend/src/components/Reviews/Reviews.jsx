@@ -12,7 +12,6 @@ const Reviews = () =>{
         const fetchReviews = async () =>{
             const response = await fetch(`/api/spots/${spotId}/reviews`);
             const data = await response.json();
-            console.log(data)
 
             if(response.ok){
                 setReviews(data)

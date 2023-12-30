@@ -1,15 +1,30 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import DeleteSpot from "./DeleteSpotsModal";
 
-const SpotsList = ({ spots }) => {
+const SpotsList = ({ spots, refreshSpots, setRefreshSpots}) => {
+    const [showMenu, setShowMenu] = useState(false);(false);
     const spotList = spots.Spots || [];
     const navigate = useNavigate();
 
     const handleUpdateSpotClick = (spotId) => {
-        console.log(spotId)
         navigate(`/spots/new`, { state: { spotId } });
     }
+
+    const handleSpotDelete = () => {
+        setRefreshSpots((prev) => !prev);
+    };
+
+    useEffect(() => {
+        if (!showMenu) return;  
+        document.addEventListener('click', closeMenu);
+    
+        return () => document.removeEventListener("click", closeMenu);
+    }, [showMenu]);
+    
+    const closeMenu = () => setShowMenu(false);
   
     return (
         <div className="spotList">
@@ -30,7 +45,12 @@ const SpotsList = ({ spots }) => {
                     </NavLink>
                     <div className="updateSpotButtons">
                         <button onClick={()=> handleUpdateSpotClick(spot.id)}>Update</button>
-                        <button>Delete</button>
+                        <OpenModalMenuItem
+                        class='openModal'
+                        itemText="DELETE"
+                        onItemClick={closeMenu}
+                        modalComponent={<DeleteSpot spotId={spot.id } onSpotDelete={handleSpotDelete} />}
+                    />
                     </div>
                 </div>
             );
@@ -41,6 +61,7 @@ const SpotsList = ({ spots }) => {
 
 const ManageSpots =() =>{
     const [spots, setSpots] = useState([]);
+    const [refreshSpots, setRefreshSpots] = useState(false);
     
     useEffect(()=>{
         const fetchSpots = async () => {
@@ -55,11 +76,11 @@ const ManageSpots =() =>{
         };
     
         fetchSpots();
-    }, [])
+    }, [refreshSpots])
 
     return (<>
     <h1>Manage Spots</h1>
-        <SpotsList spots={spots}/>
+        <SpotsList spots={spots} refreshSpots={refreshSpots} setRefreshSpots={setRefreshSpots}/>
         {spots.Spots && !spots.Spots.length &&(<button><NavLink to='/spots/new'>Create New Spot</NavLink></button>)}
     </>)
 

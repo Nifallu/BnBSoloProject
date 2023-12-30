@@ -6,16 +6,22 @@ import OpenModalMenuItem from '../Navigation/OpenModalMenuItem';
 import ReviewModal from "./OpenModalAddReview";
 
 import './spotDetails.css'
+import DeleteReview from "../Reviews/DeleteReviewModal";
 
 const SpotDetail = () => {
     const {spotId} =useParams();
     const [spotData, setSpotData] = useState(null);
     const [reviews, setReviews] = useState({ reviews: [] });
     const [showMenu, setShowMenu] = useState(false);
+    const [refreshComponent, setRefreshComponent] = useState(false);
 
     const [ownerId, setOwnerId] = useState(0);
 
     const currentUser = useSelector(state => state.session.user);
+
+    const handleRefresh = () => {
+        setRefreshComponent((prev) => !prev);
+      };
 
     useEffect(()=>{
         const fetchDetails = async () => {
@@ -32,7 +38,7 @@ const SpotDetail = () => {
         }
 
         fetchDetails()
-    },[spotId, ownerId])
+    },[spotId, ownerId, refreshComponent])
 
     useEffect(()=>{
         const fetchReviews = async () =>{
@@ -46,7 +52,7 @@ const SpotDetail = () => {
             }
         }
         fetchReviews()
-    }, [spotId])
+    }, [spotId, refreshComponent])
     
     
     useEffect(() => {
@@ -58,14 +64,6 @@ const SpotDetail = () => {
     
     const closeMenu = () => setShowMenu(false);
 
-    const handleDelete = async (reviewId) =>{
-        const response = await csrfFetch(`/api/reviews/${reviewId}`, {
-            method: 'DELETE'
-        })
-        if(response.ok){
-            console.log(response.message)
-        }
-    }
     return (
         <>
         <div>
@@ -73,7 +71,6 @@ const SpotDetail = () => {
             <p>{`${spotData && spotData.spot.city}, ${spotData && spotData.spot.state}, ${spotData && spotData.spot.country}`}</p>
             {spotData && (
             <div className="spotImages">
-                {console.log(spotData.SpotImages)}
                 {Array.isArray(spotData.SpotImages) ? (
                     spotData.SpotImages.map((image) => (   
                     <img className="images" key={image.id} src={image.url} alt={image.description} />
@@ -92,7 +89,7 @@ const SpotDetail = () => {
                     <div className="priceRating">
                         <p className="price">${spotData && spotData.spot.price} night</p>
                         <p className="rating"> ⭐
-                        {spotData && parseFloat(spotData.avgRating).toFixed(1)}{' '} 
+                        {spotData && spotData.avgRating && parseFloat(spotData.avgRating).toFixed(1)}{' '} 
                         {spotData && spotData.numReviews === 0 && 'New'}
                         {spotData && spotData.numReviews > 0 && (spotData.numReviews === 1 ? `•  1 Review` : `•  ${spotData.numReviews} Reviews`)}
                         </p>
@@ -103,7 +100,7 @@ const SpotDetail = () => {
         </div>
         <hr></hr>
         <h3>⭐
-                {spotData && parseFloat(spotData.avgRating).toFixed(1)}{' '}
+                {spotData && spotData.avgRating && parseFloat(spotData.avgRating).toFixed(1)}{' '}
                 {spotData && spotData.numReviews === 0 && 'New'}
                 {spotData && spotData.numReviews > 0 && (spotData.numReviews === 1 ? ` •  1 Review` : ` •  ${spotData.numReviews} Reviews`)}
         </h3>
@@ -112,14 +109,14 @@ const SpotDetail = () => {
                 class='openModal'
                 itemText="Be the first to post a Review!"
                 onItemClick={closeMenu}
-                modalComponent={<ReviewModal spotId={spotId} />}
+                modalComponent={<ReviewModal spotId={spotId} onReviewSubmit={handleRefresh}/>}
             />) : (
         !reviews.reviews.some((review) => review.userId === currentUser.id) && (
             <OpenModalMenuItem
                 class='openModal'
                 itemText="Post Your Review"
                 onItemClick={closeMenu}
-                modalComponent={<ReviewModal spotId={spotId} />}
+                modalComponent={<ReviewModal spotId={spotId} onReviewSubmit={handleRefresh} />}
             />
         )
     )
@@ -139,8 +136,12 @@ const SpotDetail = () => {
                     <p>{review.review}</p>
 
                     {currentUser && currentUser.id === review.User.id && (
-                        <button onClick={()=> handleDelete(review.id)}>DELETE</button>)}
-
+                        <OpenModalMenuItem
+                            class='openModal'
+                            itemText="DELETE"
+                            onItemClick={closeMenu}
+                            modalComponent={<DeleteReview reviewId={review.id} onReviewSubmit={handleRefresh}/>}
+                        />)}
                 </div>
             )
         })}
