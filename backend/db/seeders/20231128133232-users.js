@@ -9,11 +9,11 @@ module.exports = {
 
    await User.bulkCreate([
     {
-      firstName: 'One',
-      lastName: 'Eno',
-      username: 'oneeno',
-      hashedPassword: bcrypt.hashSync('password1'),
-      email: 'oneeno@user.io',
+      firstName: 'Demo',
+      lastName: 'User',
+      username: 'Demo',
+      hashedPassword: bcrypt.hashSync('password'),
+      email: 'DemoUser@user.io',
    },
    {
     firstName: 'Two' ,
@@ -49,7 +49,7 @@ module.exports = {
   async down (queryInterface, Sequelize) {
 
     await queryInterface.bulkDelete('Users', {
-      firstName: ['One', 'Two', 'Three', 'Four', 'Five']
+      firstName: ['Demo', 'Two', 'Three', 'Four', 'Five']
     })
   }
 };
