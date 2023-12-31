@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 
@@ -14,7 +14,7 @@ const Reviews = () =>{
             const data = await response.json();
 
             if(response.ok){
-                setReviews(data)
+                console.log(data)
             }else{
                 console.error(data.message)
             }

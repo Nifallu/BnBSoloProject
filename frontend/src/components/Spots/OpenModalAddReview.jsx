@@ -21,6 +21,7 @@ const ReviewModal = ({spotId, onReviewSubmit}) => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       setErrors({});
+      console.log(errors)
   
       try {
         const response = await dispatch(
