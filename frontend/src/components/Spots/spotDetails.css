@@ -34,7 +34,10 @@
 
 .images {
     border-radius: 10px;
+    height: 100%;
     width: 100%;
+    object-fit: cover;
+
 }
 
 button {
@@ -97,4 +100,8 @@ button {
 .delete {
     background-color: red;
     color: white
+}
+
+.spotDetail {
+    width: 60%
 }

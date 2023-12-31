@@ -7,7 +7,7 @@ const SpotsList = ({ spots }) => {
     return (
       <div className="spotList">
         {spotList.map((spot) => {
-          let stars = spot.avgRating < 1 ? 'New' : spot.avgRating;
+          let stars = spot.avgRating < 1 ? 'New' : parseFloat(spot.avgRating).toFixed(1);
           const images= spot.previewImage.split(',')
           return (
             <div className='card' key={spot.id}>
