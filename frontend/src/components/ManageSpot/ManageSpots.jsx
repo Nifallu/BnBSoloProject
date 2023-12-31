@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteSpot from "./DeleteSpotsModal";
 
-const SpotsList = ({ spots, refreshSpots, setRefreshSpots}) => {
+const SpotsList = ({ spots, setRefreshSpots}) => {
     const [showMenu, setShowMenu] = useState(false);(false);
     const spotList = spots.Spots || [];
     const navigate = useNavigate();

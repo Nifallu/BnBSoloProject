@@ -99,7 +99,7 @@ const CreateSpotForm = () => {
 
             fetchSpotData();
         }
-    }, [spotId]);
+    }, [spotId, formData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -115,9 +115,9 @@ const CreateSpotForm = () => {
                 },
                 body: JSON.stringify(formData),
             });
-
+            const result = await response.json();
             if (response.ok) {
-                const result = await response.json();
+
                 const updateSpotId = result.id || spotId;
 
                 dispatch(createImages(formData.images, updateSpotId));
@@ -152,7 +152,7 @@ const CreateSpotForm = () => {
     return (
         <form onSubmit={handleSubmit} className="form">
             <h1>{isUpdating ? 'Update Spot' : 'Create a New Spot'}</h1>
-            <h2>Where's your place located?</h2>
+            <h2>Where&apos;s your place located?</h2>
             <p>Guests will only get your exact address once they booked a reservation.</p>
             <div>
                 <label>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import { csrfFetch } from '../../store/csrf';
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem';
 import ReviewModal from "./OpenModalAddReview";
 

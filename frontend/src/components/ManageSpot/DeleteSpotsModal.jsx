@@ -1,4 +1,5 @@
 import { useModal } from '../../context/Modal';
+import { csrfFetch } from '../../store/csrf';
 
 const DeleteSpot = ({spotId, onSpotDelete}) =>{
     const { closeModal } = useModal();

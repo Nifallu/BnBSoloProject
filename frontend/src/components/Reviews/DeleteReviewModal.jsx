@@ -1,5 +1,6 @@
 import { useModal } from '../../context/Modal';
-import OpenModalMenuItem from '../Navigation/OpenModalMenuItem';
+import { csrfFetch } from '../../store/csrf';
+
 
 const DeleteReview = ({reviewId, onReviewSubmit}) =>{
     const { closeModal } = useModal();
