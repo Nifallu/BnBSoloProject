@@ -12,6 +12,7 @@ const SpotsList = ({ spots }) => {
           return (
             <div className='card' key={spot.id}>
                 <NavLink  to={`/spot/${spot.id}`} key={spot.id} className='spotCard'>
+                  <p className='hidden-text'>{spot.name}</p>
                 <img className='image' src={images[0]} alt={`${spot.city}, ${spot.state}, ${spot.previewImage}`} />
                 <div className="spotContent">
                     <div className='header'>

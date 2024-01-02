@@ -49,6 +49,7 @@ body {
     padding: 8px;
     width: 100px;
     background-color: #2d2d2d;
+    cursor: pointer;
   }
 
   .createSpot {
@@ -65,4 +66,5 @@ body {
   .logInButtons {
     display: flex;
     flex-direction: column;
+    cursor: pointer;
   }

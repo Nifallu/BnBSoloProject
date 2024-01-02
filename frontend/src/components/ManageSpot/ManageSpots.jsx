@@ -44,7 +44,7 @@ const SpotsList = ({ spots, setRefreshSpots}) => {
                     </div>
                     </NavLink>
                     <div className="updateSpotButtons">
-                        <button onClick={()=> handleUpdateSpotClick(spot.id)}>Update</button>
+                        <button className="logInButtons" onClick={()=> handleUpdateSpotClick(spot.id)}>Update</button>
                         <OpenModalMenuItem
                         class='openModal'
                         itemText="DELETE"

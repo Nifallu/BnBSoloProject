@@ -38,3 +38,6 @@ label {
 .description {
     height: 100px;
 }
+.createButton {
+    cursor: pointer;
+}

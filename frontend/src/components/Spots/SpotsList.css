@@ -42,6 +42,7 @@
   }
   .card:hover {
     background-color: #5c5c5c;
+    
   }
   .spotContent {
     display: flex;
@@ -51,6 +52,19 @@
 
   .stars {
     margin-left: 40px; 
+  }
+
+  .hidden-text {
+      position: absolute;
+      border: lightblue solid 1px;
+      background-color: #5c5c5c;
+      padding: 5px;
+      border-radius: 5px;
+      display: none;
+    }
+
+  .card:hover .hidden-text {
+    display: inline
   }
 
   .image {
@@ -70,8 +84,10 @@
   .updateSpotButtons {
     display: flex;
     justify-content: space-between;
+    cursor: pointer;
 }
 
 .deleteButtons {
   text-align: center;
+  cursor: pointer;
 }

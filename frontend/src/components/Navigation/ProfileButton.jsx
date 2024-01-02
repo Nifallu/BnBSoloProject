@@ -59,7 +59,7 @@ function ProfileButton({ user }) {
             </li>
             <hr></hr>
             <li>
-              <button onClick={logout}>Log Out</button>
+              <button onClick={logout} className='logInButtons'>Log Out</button>
             </li>
           </div>
         ) : (

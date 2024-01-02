@@ -272,6 +272,7 @@ const CreateSpotForm = () => {
             </div>
             <button
             type="submit"
+            className="createButton"
             // disabled={Object.values(validation).length > 0 || !formSubmitted}
         >
             {isUpdating ? 'Update Spot' : 'Create Spot'}
