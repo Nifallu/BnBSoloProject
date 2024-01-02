@@ -57,8 +57,14 @@ const CreateSpotForm = () => {
         if (!formData.description) {
             validationObj.description = 'Description is required';
         }
+        if (formData.description && formData.description.length < 30){
+            validationObj.description = 'Description 30 characters'
+        }
         if (!formData.price || isNaN(parseFloat(formData.price))) {
             validationObj.price = 'Price per day is required and must be a number greater than zero';
+        }
+        if (formData.price && formData.price < 1){
+            validationObj.price = 'Price must be a number greater than zero';
         }
 
         const hasNonEmptyPreview = formData.images.some(image => image.trim() !== '');
@@ -219,7 +225,7 @@ const CreateSpotForm = () => {
                         type='textarea'
                         value={formData.description}
                         onChange={handleInputChange}
-                        placeholder="Pleas write at least 30 characters"
+                        placeholder="Please write at least 30 characters"
                     />
                     {formSubmitted &&  'description' in validation && (<p className="errors">{validation.description}</p>)}
                 </label>

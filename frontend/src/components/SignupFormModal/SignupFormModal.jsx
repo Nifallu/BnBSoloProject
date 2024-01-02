@@ -52,7 +52,7 @@ function SignupFormModal() {
       <form onSubmit={handleSubmit}>
         <label>
           <input
-            placeholder='Email'
+            placeholder='Email (required to sign up)'
             type='text'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -62,7 +62,7 @@ function SignupFormModal() {
         {errors.email && <p>{errors.email}</p>}
         <label>
           <input
-            placeholder='Username'
+            placeholder='Username (required to sign up)'
             type='text'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -72,7 +72,7 @@ function SignupFormModal() {
         {errors.username && <p>{errors.username}</p>}
         <label>
           <input
-            placeholder='First Name'
+            placeholder='First Name (required to sign up)'
             type='text'
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -82,7 +82,7 @@ function SignupFormModal() {
         {errors.firstName && <p>{errors.firstName}</p>}
         <label>
           <input
-            placeholder='Last Name'
+            placeholder='Last Name (required to sign up)'
             type='text'
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -92,7 +92,7 @@ function SignupFormModal() {
         {errors.lastName && <p>{errors.lastName}</p>}
         <label>
           <input
-            placeholder='Password'
+            placeholder='Password (required to sign up)'
             type='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -102,7 +102,7 @@ function SignupFormModal() {
         {errors.password && <p>{errors.password}</p>}
         <label>
           <input
-            placeholder='Confirm Password'
+            placeholder='Confirm Password (required to sign up)'
             type='password'
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}

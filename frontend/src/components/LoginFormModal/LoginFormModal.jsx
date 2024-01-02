@@ -56,7 +56,7 @@ function LoginFormModal() {
         <label>
           <input
             name="credential"
-            placeholder='Username or Email'
+            placeholder='Username or Email (required to log in)'
             type="text"
             value={credential}
             onChange={handleInputChange}
@@ -66,7 +66,7 @@ function LoginFormModal() {
         <label>
           <input
             name='password'
-            placeholder='Password'
+            placeholder='Password (required to log in)'
             type="password"
             value={password}
             onChange={handleInputChange}
