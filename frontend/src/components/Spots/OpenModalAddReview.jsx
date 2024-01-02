@@ -58,7 +58,7 @@ const ReviewModal = ({spotId, onReviewSubmit}) => {
 
     return (
         <div className='ReviewModal'>
-            <h2>How was your stay</h2>
+            <h2>How was your stay?</h2>
             {serverError && <p style={{ color: 'red' }}>{serverError}</p>}
             <input  className='reviewTextarea'
                     type='textarea' 
@@ -73,6 +73,7 @@ const ReviewModal = ({spotId, onReviewSubmit}) => {
                     disabled={false}
                     onChange={onChange}
                     rating={stars}/>
+                    <p>Stars</p>
             <button onClick={handleSubmit}
                     disabled={reviewText.length < 10}
                     >Submit Your Review</button>
