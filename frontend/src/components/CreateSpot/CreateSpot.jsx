@@ -99,7 +99,7 @@ const CreateSpotForm = () => {
 
             fetchSpotData();
         }
-    }, [spotId, formData]);
+    }, [spotId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
