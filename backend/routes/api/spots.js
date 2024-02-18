@@ -469,6 +469,8 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res)=>{
     if(description) spot.description = description;
     if(price) spot.price = price;
 
+    await spot.save()
+    
     res.json(spot)
 })
 

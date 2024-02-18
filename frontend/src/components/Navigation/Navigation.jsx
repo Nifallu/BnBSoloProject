@@ -11,7 +11,7 @@ function Navigation({ isLoaded }) {
     <>
     <ul className='navigationBar'>
       <li>
-        <NavLink className='home' exact to="/">BnBHome</NavLink>
+        <NavLink className='home' exact to="/">OasisB&B</NavLink>
       </li>
       {isLoaded && (
         <li>

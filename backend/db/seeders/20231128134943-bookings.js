@@ -1,6 +1,11 @@
 'use strict';
 const { Booking } = require('../models');
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -47,7 +52,8 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Bookings',{
+    options.tableName = 'Bookings'
+    await queryInterface.bulkDelete(options,{
       spotId: [1,2,3,4,5]
     })
   }
