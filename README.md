@@ -8,41 +8,44 @@ The project is currently hosted at [OasisBnB](https://api-bnb-project.onrender.c
 
 ## Features
 
+## Database Schema
+![db-schema] [db-schema]: /images/airbnb_dbdiagram.png
+
 ### User Authentication/Authorization
 Sign Up & Log In: Users can securely sign up for a new account or log in with existing credentials.
 Authentication & Authorization: Certain endpoints require authentication and authorization to access, ensuring data security.
 
 ### Spots Management
-View All Spots: Users can view all available spots without authentication.
-View User's Spots: Authenticated users can view spots they own.
-Spot Details: Users can view detailed information about a specific spot.
-Create, Edit & Delete Spots: Authenticated users can create new spots, edit existing ones, and delete spots they own.
-Reviews
-View Reviews by User: Authenticated users can view reviews written by them.
-View Reviews by Spot: Users can view reviews associated with a specific spot.
-Create, Edit & Delete Reviews: Authenticated users can leave reviews for spots, edit their reviews, and delete their reviews.
+View All Spots: Users can view all available spots without authentication.  
+View User's Spots: Authenticated users can view spots they own.  
+Spot Details: Users can view detailed information about a specific spot.  
+Create, Edit & Delete Spots: Authenticated users can create new spots, edit existing ones, and delete spots they own.  
+Reviews  
+View Reviews by User: Authenticated users can view reviews written by them.  
+View Reviews by Spot: Users can view reviews associated with a specific spot.  
+Create, Edit & Delete Reviews: Authenticated users can leave reviews for spots, edit their reviews, and delete their reviews.  
 
 
 ## Installation
-To run the project locally, follow these steps:
+To run the project locally, follow these steps:  
 
-Clone the repository.
-Install dependencies: npm install.
-Start the development server: npm start.
-Open your browser and navigate to localhost.
+Clone the repository.  
+Install dependencies: npm install.  
+Start the development server: npm start.  
+Open your browser and navigate to localhost.  
 
 ## Technologies Used
-Frontend: React
-Backend: Express.js
-Database: PostgreSQL
-Authentication: JWT Tokens
-Authorization: Role-based access control
+Frontend: React  
+Backend: Express.js  
+Database: PostgreSQL  
+Authentication: JWT Tokens  
+Authorization: Role-based access control  
 
 ## Future Features
-Bookings: Allows users to book a spot. 
-Image Uploads: Allow users to upload images for their spots and reviews.
-Search Functionality: Implement search functionality to find spots based on various criteria.
-Messaging System: Enable communication between users for inquiries and bookings.
-Payment Integration: Integrate payment methods for booking spots.
-User Profiles: Allow users to create and manage their profiles with additional information.
+Bookings: Allows users to book a spot.   
+Image Uploads: Allow users to upload images for their spots and reviews.  
+Search Functionality: Implement search functionality to find spots based on various criteria.  
+Messaging System: Enable communication between users for inquiries and bookings.  
+Payment Integration: Integrate payment methods for booking spots.  
+User Profiles: Allow users to create and manage their profiles with additional information.  
 
