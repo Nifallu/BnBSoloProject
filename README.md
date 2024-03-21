@@ -47,5 +47,4 @@ Image Uploads: Allow users to upload images for their spots and reviews.
 Search Functionality: Implement search functionality to find spots based on various criteria.  
 Messaging System: Enable communication between users for inquiries and bookings.  
 Payment Integration: Integrate payment methods for booking spots.  
-User Profiles: Allow users to create and manage their profiles with additional information.  
 
