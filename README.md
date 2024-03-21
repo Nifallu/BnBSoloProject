@@ -4,12 +4,12 @@
 This project is a web application inspired by AirBnB, designed to facilitate property rentals and user reviews. Users can sign up, log in, view available spots, create their own spots, leave reviews, and manage their listings. The application also includes user authentication and authorization features to ensure secure access to various functionalities.
 
 ## Live Site
-The project is currently hosted at [OasisBnB](https://api-bnb-project.onrender.com)
-
-## Features
+The project is currently hosted at [OasisBnB](https://api-bnb-project.onrender.com)  
 
 ## Database Schema
 ![db-schema] [db-schema]: /images/airbnb_dbdiagram.png
+
+## Features
 
 ### User Authentication/Authorization
 Sign Up & Log In: Users can securely sign up for a new account or log in with existing credentials.
