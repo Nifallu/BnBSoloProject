@@ -48,8 +48,7 @@ Authorization: Role-based access control
 
 ## Future Features
 Bookings: Allows users to book a spot.   
-Image Uploads: Allow users to upload images for their spots and reviews.  
+Image Uploads: Allow users to upload images for reviews.  
 Search Functionality: Implement search functionality to find spots based on various criteria.  
-Messaging System: Enable communication between users for inquiries and bookings.  
 Payment Integration: Integrate payment methods for booking spots.  
 
